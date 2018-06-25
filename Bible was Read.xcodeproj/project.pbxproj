@@ -14,6 +14,9 @@
 		93B2006A20D9B1160058106C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93B2006820D9B1160058106C /* LaunchScreen.storyboard */; };
 		93B2007520D9B1160058106C /* Bible_was_ReadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B2007420D9B1160058106C /* Bible_was_ReadTests.swift */; };
 		93B2008020D9B1170058106C /* Bible_was_ReadUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B2007F20D9B1170058106C /* Bible_was_ReadUITests.swift */; };
+		93D7566720DD8F0C00A4F85A /* BooksOfTheBibleTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7566620DD8F0C00A4F85A /* BooksOfTheBibleTableViewController.swift */; };
+		93D7566920DD935000A4F85A /* BookOfTheBible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7566820DD935000A4F85A /* BookOfTheBible.swift */; };
+		93D7566B20E1701100A4F85A /* BookOfTheBibleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7566A20E1701100A4F85A /* BookOfTheBibleManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +50,9 @@
 		93B2007B20D9B1170058106C /* Bible was ReadUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Bible was ReadUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B2007F20D9B1170058106C /* Bible_was_ReadUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bible_was_ReadUITests.swift; sourceTree = "<group>"; };
 		93B2008120D9B1170058106C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		93D7566620DD8F0C00A4F85A /* BooksOfTheBibleTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BooksOfTheBibleTableViewController.swift; sourceTree = "<group>"; };
+		93D7566820DD935000A4F85A /* BookOfTheBible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookOfTheBible.swift; sourceTree = "<group>"; };
+		93D7566A20E1701100A4F85A /* BookOfTheBibleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookOfTheBibleManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +104,9 @@
 			isa = PBXGroup;
 			children = (
 				93B2005F20D9B1160058106C /* AppDelegate.swift */,
+				93D7566820DD935000A4F85A /* BookOfTheBible.swift */,
+				93D7566A20E1701100A4F85A /* BookOfTheBibleManager.swift */,
+				93D7566620DD8F0C00A4F85A /* BooksOfTheBibleTableViewController.swift */,
 				93B2006120D9B1160058106C /* VersionViewController.swift */,
 				93B2006320D9B1160058106C /* Main.storyboard */,
 				93B2006620D9B1160058106C /* Assets.xcassets */,
@@ -260,6 +269,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B2006220D9B1160058106C /* VersionViewController.swift in Sources */,
+				93D7566720DD8F0C00A4F85A /* BooksOfTheBibleTableViewController.swift in Sources */,
+				93D7566920DD935000A4F85A /* BookOfTheBible.swift in Sources */,
+				93D7566B20E1701100A4F85A /* BookOfTheBibleManager.swift in Sources */,
 				93B2006020D9B1160058106C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -427,7 +439,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				INFOPLIST_FILE = "Bible was Read/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -445,7 +457,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				INFOPLIST_FILE = "Bible was Read/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
