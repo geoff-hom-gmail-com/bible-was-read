@@ -1,5 +1,5 @@
 //
-//  BooksOfTheBibleTableViewController.swift
+//  BookOfTheBibleTableViewController.swift
 //  Bible was Read
 //
 //  Created by Geoff Hom on 6/22/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class BooksOfTheBibleTableViewController: UITableViewController {
+class BookOfTheBibleTableViewController: UITableViewController {
 
     // MARK: Properties
     
@@ -45,10 +45,10 @@ class BooksOfTheBibleTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        // Table view cells are reused and should be dequeued with a cell identifier.
+        // Table-view cells are reused and should be dequeued.
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath)
         
-        // Fetch the appropriate symptom for the data source layout.
+        // Populate the cell.
         let book = booksOfTheBible[indexPath.row]
         cell.textLabel?.text = book.name
         
@@ -90,14 +90,33 @@ class BooksOfTheBibleTableViewController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        // Prepare before navigation segue.
+
+        super.prepare(for: segue, sender: sender)
+        switch(segue.identifier ?? "") {
+        case "ShowChapters":
+            guard let chapterTableViewController = segue.destination as? ChapterTableViewController else {
+                fatalError("Unexpected destination: \(segue.destination)")
+            }
+            
+            // Get selected book.
+            guard let selectedCell = sender as? UITableViewCell else {
+                fatalError("Unexpected sender: \(String(describing: sender))")
+            }
+            guard let indexPath = tableView.indexPath(for: selectedCell) else {
+                fatalError("The selected cell is not being displayed by the table")
+            }
+//            symptomDetailViewController.delegate = self
+            let selectedBookOfTheBible = booksOfTheBible[indexPath.row]
+            
+            chapterTableViewController.bookOfTheBible = selectedBookOfTheBible
+//            symptomDetailViewController.symptomIndex = indexPath.row
+        default:
+            ()
+        }
     }
-    */
 
 }

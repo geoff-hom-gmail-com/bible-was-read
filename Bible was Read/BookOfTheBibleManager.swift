@@ -67,18 +67,18 @@ class BookOfTheBibleManager: NSObject {
         
         // this is temp. really want to read from a text file
         var book1 = BookOfTheBible(name: "Matthew")
-        var tempChapter = Chapter()
+        var tempChapter = Chapter(name: "1")
         tempChapter.verses.append(Verse())
         book1.chapters.append(tempChapter)
         var book2 = BookOfTheBible(name: "Mark")
-        tempChapter = Chapter()
+        tempChapter = Chapter(name: "1")
         for _ in 1...5 {
             tempChapter.verses.append(Verse())
         }
-        book2.chapters.append(contentsOf: [tempChapter, Chapter()])
+        book2.chapters.append(contentsOf: [tempChapter, Chapter(name: "2")])
         var book3 = BookOfTheBible(name: "Luke")
-        for _ in 1...5 {
-            book3.chapters.append(Chapter())
+        for index in 1...5 {
+            book3.chapters.append(Chapter(name: String(index)))
         }
 //        book3.chapters.append(contentsOf: chapters)
 

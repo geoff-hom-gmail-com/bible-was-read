@@ -12,6 +12,8 @@ struct Chapter: Codable {
     
     // MARK: Properties
     
+    var name: String
+
     var wasRead: Bool
 
     var verses = [Verse]()
@@ -19,9 +21,11 @@ struct Chapter: Codable {
 
     // MARK: Initialization
     
-    init(wasRead: Bool = false) {
-
+    // (temp) call: Chapter(name: "1", wasRead: true)
+    init(name: String, wasRead: Bool = false) {
+        
         // Initialize stored properties.
+        self.name = name
         self.wasRead = wasRead
     }
 }

@@ -14,16 +14,16 @@ struct BookOfTheBible: Codable {
     
 //    static let defaultName = "Unnamed"
     
-    var wasRead: Bool
-
     var name: String
+    
+    var wasRead: Bool
     
     var chapters = [Chapter]()
     // A book of the Bible is created, then chapters are added.
 
     // MARK: Initialization
     
-    // call: BookOfTheBible(name: "John", wasRead: true)
+    // (temp) call: BookOfTheBible(name: "John", wasRead: true)
     init(name: String, wasRead: Bool = false) {
         
         // Initialize stored properties.
