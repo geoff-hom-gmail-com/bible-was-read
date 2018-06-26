@@ -12,18 +12,22 @@ struct BookOfTheBible: Codable {
     
     // MARK: Properties
     
-    static let defaultName = "Unnamed Book of the Bible"
-    // a book of the bible (don't use "bible book") has to know just how many chapters it has
-// oh and its name
+//    static let defaultName = "Unnamed"
     
+    var wasRead: Bool
+
     var name: String
-    // The name usually is not blank, but it can be (e.g., whitespace).
     
+    var chapters = [Chapter]()
+    // A book of the Bible is created, then chapters are added.
+
     // MARK: Initialization
     
-    init(name theName: String = defaultName) {
+    // call: BookOfTheBible(name: "John", wasRead: true)
+    init(name: String, wasRead: Bool = false) {
         
         // Initialize stored properties.
-        name = theName
+        self.name = name
+        self.wasRead = wasRead
     }
 }

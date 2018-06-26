@@ -19,11 +19,69 @@ class BookOfTheBibleManager: NSObject {
     // MARK: Default Data
     
     static func blankBooks() -> [BookOfTheBible] {
+        
+//        let url = BookOfTheBibleManager.SavedBooksURL
+//        let decoder = JSONDecoder()
+//        do {
+//            let data = try Data(contentsOf: url)
+//            let books = try decoder.decode([BookOfTheBible].self, from: data)
+//            return books
+//        } catch {
+//            os_log("Unable to load symptoms: %@. Loading blank data.", log: OSLog.default, type: .debug, String(describing: error))
+//            return BookOfTheBibleManager.blankBooks()
+//        }
+        
+//        let url = Bundle.main.url(forResource: "BooksOfTheBible", withExtension: "txt")
+//
+//        
+//        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+//            
+//            let fileURL = dir.appendingPathComponent(file)
+//            
+//           
+//            //reading
+//            do {
+//                let text2 = try String(contentsOf: fileURL, encoding: .utf8)
+//            }
+//            catch {/* error handling here */}
+//        }
+//        
+//        
+//        let dir = try? FileManager.default.url(for: .documentDirectory,
+//                                               in: .userDomainMask, appropriateFor: nil, create: true)
+//        
+//        // If the directory was found, we write a file to it and read it back
+//        
+//        if let fileURL = dir?.appendingPathComponent(fileName).appendingPathExtension("txt") {
+//            
+// 
+//            // Then reading it back from the file
+//            var inString = ""
+//            do {
+//                inString = try String(contentsOf: fileURL)
+//            } catch {
+//                print("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
+//            }
+//            print("Read from the file: \(inString)")
+//        }
+        
         // this is temp. really want to read from a text file
         var book1 = BookOfTheBible(name: "Matthew")
+        var tempChapter = Chapter()
+        tempChapter.verses.append(Verse())
+        book1.chapters.append(tempChapter)
         var book2 = BookOfTheBible(name: "Mark")
+        tempChapter = Chapter()
+        for _ in 1...5 {
+            tempChapter.verses.append(Verse())
+        }
+        book2.chapters.append(contentsOf: [tempChapter, Chapter()])
         var book3 = BookOfTheBible(name: "Luke")
-        
+        for _ in 1...5 {
+            book3.chapters.append(Chapter())
+        }
+//        book3.chapters.append(contentsOf: chapters)
+
         return [book1, book2, book3]
     }
     
