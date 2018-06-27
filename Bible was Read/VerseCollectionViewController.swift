@@ -14,14 +14,18 @@ class VerseCollectionViewController: UICollectionViewController {
 
     // MARK: Properties
     
+    var bookName: String!
+    // Conceptually a constant, as the value is set by the parent and never changed.
+
     var chapter: Chapter!
     // Conceptually a constant, as the value is set by the parent and never changed.
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // instead of "Chapter 2," it should be like "Mark 2" or "John 2". So we need the chapter's book's name. hmm...
-        navigationItem.title = "Chapter " + chapter.name
-
+        
+        navigationItem.title = "\(bookName ?? "") \(chapter.name)"
+        // 6.27.18: IUO isn't implicitly unwrapped, so using ??.
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

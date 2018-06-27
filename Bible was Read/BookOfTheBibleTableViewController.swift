@@ -102,7 +102,7 @@ class BookOfTheBibleTableViewController: UITableViewController {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            // Get selected book.
+            // Set selected book.
             guard let selectedCell = sender as? UITableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
@@ -111,7 +111,6 @@ class BookOfTheBibleTableViewController: UITableViewController {
             }
 //            symptomDetailViewController.delegate = self
             let selectedBookOfTheBible = booksOfTheBible[indexPath.row]
-            
             chapterTableViewController.bookOfTheBible = selectedBookOfTheBible
 //            symptomDetailViewController.symptomIndex = indexPath.row
         default:
