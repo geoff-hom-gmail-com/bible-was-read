@@ -22,6 +22,7 @@
 		93D7567420E1E7DC00A4F85A /* Verse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7567320E1E7DC00A4F85A /* Verse.swift */; };
 		93D7567620E1F6C800A4F85A /* VerseCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7567520E1F6C800A4F85A /* VerseCollectionViewController.swift */; };
 		93D7567820E2B35E00A4F85A /* ChapterTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7567720E2B35E00A4F85A /* ChapterTableViewController.swift */; };
+		93D7567A20E594CD00A4F85A /* VerseCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D7567920E594CD00A4F85A /* VerseCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		93D7567320E1E7DC00A4F85A /* Verse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Verse.swift; sourceTree = "<group>"; };
 		93D7567520E1F6C800A4F85A /* VerseCollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCollectionViewController.swift; sourceTree = "<group>"; };
 		93D7567720E2B35E00A4F85A /* ChapterTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChapterTableViewController.swift; sourceTree = "<group>"; };
+		93D7567920E594CD00A4F85A /* VerseCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerseCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 				93D7567120E1E6FA00A4F85A /* Chapter.swift */,
 				93D7567720E2B35E00A4F85A /* ChapterTableViewController.swift */,
 				93D7567320E1E7DC00A4F85A /* Verse.swift */,
+				93D7567920E594CD00A4F85A /* VerseCollectionViewCell.swift */,
 				93D7567520E1F6C800A4F85A /* VerseCollectionViewController.swift */,
 				93B2006120D9B1160058106C /* VersionViewController.swift */,
 				93B2006320D9B1160058106C /* Main.storyboard */,
@@ -286,6 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93D7567A20E594CD00A4F85A /* VerseCollectionViewCell.swift in Sources */,
 				93D7567820E2B35E00A4F85A /* ChapterTableViewController.swift in Sources */,
 				93D7567420E1E7DC00A4F85A /* Verse.swift in Sources */,
 				93B2006220D9B1160058106C /* VersionViewController.swift in Sources */,
@@ -461,7 +465,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				INFOPLIST_FILE = "Bible was Read/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -479,7 +483,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				INFOPLIST_FILE = "Bible was Read/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

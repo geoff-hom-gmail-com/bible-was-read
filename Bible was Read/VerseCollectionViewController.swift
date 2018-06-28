@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import os.log
 
-private let reuseIdentifier = "Cell"
+private let reuseIdentifier = "VerseCollectionViewCell"
 
 class VerseCollectionViewController: UICollectionViewController {
 
@@ -30,7 +31,7 @@ class VerseCollectionViewController: UICollectionViewController {
         // self.clearsSelectionOnViewWillAppear = false
 
         // Register cell classes
-        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
+//        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
     }
@@ -53,22 +54,27 @@ class VerseCollectionViewController: UICollectionViewController {
     // MARK: UICollectionViewDataSource
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of items
-        return 0
+        
+        // temp check
+        os_log("verses: %i.", log: OSLog.default, type: .info, chapter.verses.count)
+        return chapter.verses.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath)
-    
-        // Configure the cell
-    
-        return cell
+        
+        let verseCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! VerseCollectionViewCell
+        
+        // Populate the cell.
+        // TODO: this should be the verse number
+        verseCollectionViewCell.label.text = String(indexPath.row + 1)
+//        verseCollectionViewCell.label.text = "453" String(indexPath.row + 1)
+
+        return verseCollectionViewCell
     }
 
     // MARK: UICollectionViewDelegate
