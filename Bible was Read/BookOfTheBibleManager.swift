@@ -15,11 +15,42 @@ class BookOfTheBibleManager: NSObject {
     
     static let DocumentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     static let SavedBooksURL = DocumentsDirectory.appendingPathComponent("books")
+    static let BlankBooksFilename = "ChapterAndVerseList"
+    static let BlankBooksSuffix = "csv"
     
     // MARK: Default Data
     
     static func blankBooks() -> [BookOfTheBible] {
+        // TODO: add descriptive comment here.
         
+        // TODO: Let's read from the file and print out what it says.
+        guard let blankBooksURL = Bundle.main.url(forResource: BlankBooksFilename, withExtension: BlankBooksSuffix) else {
+            
+            os_log("Can't find file with blank books: %@.", log: OSLog.default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
+            return [BookOfTheBible(name: "Can't Find Blank Books")]
+        }
+        do {
+            let csvText = try String(contentsOf: blankBooksURL, encoding: .utf8)
+            //keep going
+            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
+            // clean csv text?
+            let cleanedCSV = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
+            // get each line
+            let rows = cleanedCSV.components(separatedBy: CharacterSet.newlines)
+            //TODO: This prints the book, chapter, verse. Want to build that into BookOfTheBible object.
+            for row in rows {
+                let columns = row.components(separatedBy: ",")
+                for column in columns {
+                    os_log("column entry: %@.", log: OSLog.default, type: .debug, column)
+                }
+            }
+        }
+        catch {
+            os_log("Blank-books file exists, but can't read it: %@.", log: OSLog.default, type: .debug, String(describing: error))
+            //TODO: this is dup code; refactor
+            return [BookOfTheBible(name: "Can't Find Blank Books")]
+        }
+
 //        let url = BookOfTheBibleManager.SavedBooksURL
 //        let decoder = JSONDecoder()
 //        do {
