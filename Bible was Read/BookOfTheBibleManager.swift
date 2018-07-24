@@ -20,10 +20,10 @@ class BookOfTheBibleManager: NSObject {
     
     // MARK: Default Data
     
+    /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
     static func blankBooks() -> [BookOfTheBible] {
-        // TODO: add descriptive comment here.
         
-        // TODO: Let's read from the file and print out what it says.
+        // Blank Bible data is in a text file. Read it and parse.
         guard let blankBooksURL = Bundle.main.url(forResource: BlankBooksFilename, withExtension: BlankBooksSuffix) else {
             
             os_log("Can't find file with blank books: %@.", log: OSLog.default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
@@ -31,89 +31,59 @@ class BookOfTheBibleManager: NSObject {
         }
         do {
             let csvText = try String(contentsOf: blankBooksURL, encoding: .utf8)
-            //keep going
-            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
-            // clean csv text?
-            let cleanedCSV = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
-            // get each line
-            let rows = cleanedCSV.components(separatedBy: CharacterSet.newlines)
-            //TODO: This prints the book, chapter, verse. Want to build that into BookOfTheBible object.
-            for row in rows {
-                let columns = row.components(separatedBy: ",")
-                for column in columns {
-                    os_log("column entry: %@.", log: OSLog.default, type: .debug, column)
-                }
+//            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
+            
+            // Clean up newlines.
+            let cleanedCSVText = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
+
+            var lines = cleanedCSVText.components(separatedBy: CharacterSet.newlines)
+            
+            // Assume a header of Book, Chapter, Verse. Remove it.
+            let header = lines.removeFirst()
+            os_log("Header: %@.", log: OSLog.default, type: .debug, header)
+
+            // Initialize first book.
+            guard let firstLine = lines.first else {
+                os_log("File has only one line, which should be the header.", log: OSLog.default, type: .debug)
+                return [BookOfTheBible(name: "File has only header")]
             }
+            let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
+
+            var currentBookName = firstBookFirstChapterInfo[0]
+            var currentBook = BookOfTheBible(name: currentBookName)
+            var books = [BookOfTheBible]()
+            for line in lines {
+                let chapterInfo = line.components(separatedBy: ",")
+                
+                // If new book name, add old book and make new book.
+                let bookName = chapterInfo[0]
+                if bookName != currentBookName {
+                    books.append(currentBook)
+
+                    currentBookName = bookName
+                    currentBook = BookOfTheBible(name: currentBookName)
+                }
+                
+                // Add chapter to book.
+                let chapterName = chapterInfo[1]
+                var chapter = Chapter(name: chapterName)
+                if let numVerses = Int(chapterInfo[2]) {
+                    for _ in 1...numVerses {
+                        chapter.verses.append(Verse())
+                    }
+                }
+                currentBook.chapters.append(chapter)
+            }
+            
+            // Add last book.
+            books.append(currentBook)
+            
+            return books
         }
         catch {
             os_log("Blank-books file exists, but can't read it: %@.", log: OSLog.default, type: .debug, String(describing: error))
-            //TODO: this is dup code; refactor
-            return [BookOfTheBible(name: "Can't Find Blank Books")]
+            return [BookOfTheBible(name: "Can't Read Blank Books")]
         }
-
-//        let url = BookOfTheBibleManager.SavedBooksURL
-//        let decoder = JSONDecoder()
-//        do {
-//            let data = try Data(contentsOf: url)
-//            let books = try decoder.decode([BookOfTheBible].self, from: data)
-//            return books
-//        } catch {
-//            os_log("Unable to load symptoms: %@. Loading blank data.", log: OSLog.default, type: .debug, String(describing: error))
-//            return BookOfTheBibleManager.blankBooks()
-//        }
-        
-//        let url = Bundle.main.url(forResource: "BooksOfTheBible", withExtension: "txt")
-//
-//        
-//        if let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-//            
-//            let fileURL = dir.appendingPathComponent(file)
-//            
-//           
-//            //reading
-//            do {
-//                let text2 = try String(contentsOf: fileURL, encoding: .utf8)
-//            }
-//            catch {/* error handling here */}
-//        }
-//        
-//        
-//        let dir = try? FileManager.default.url(for: .documentDirectory,
-//                                               in: .userDomainMask, appropriateFor: nil, create: true)
-//        
-//        // If the directory was found, we write a file to it and read it back
-//        
-//        if let fileURL = dir?.appendingPathComponent(fileName).appendingPathExtension("txt") {
-//            
-// 
-//            // Then reading it back from the file
-//            var inString = ""
-//            do {
-//                inString = try String(contentsOf: fileURL)
-//            } catch {
-//                print("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
-//            }
-//            print("Read from the file: \(inString)")
-//        }
-        
-        // this is temp. really want to read from a text file
-        var book1 = BookOfTheBible(name: "Matthew")
-        var tempChapter = Chapter(name: "1")
-        tempChapter.verses.append(Verse())
-        book1.chapters.append(tempChapter)
-        var book2 = BookOfTheBible(name: "Mark")
-        tempChapter = Chapter(name: "1")
-        for _ in 1...5 {
-            tempChapter.verses.append(Verse())
-        }
-        book2.chapters.append(contentsOf: [tempChapter, Chapter(name: "2")])
-        var book3 = BookOfTheBible(name: "Luke")
-        for index in 1...5 {
-            book3.chapters.append(Chapter(name: String(index)))
-        }
-//        book3.chapters.append(contentsOf: chapters)
-
-        return [book1, book2, book3]
     }
     
     // MARK: Save/Load
