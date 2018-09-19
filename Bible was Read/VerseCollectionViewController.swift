@@ -24,16 +24,18 @@ class VerseCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        navigationItem.title = "\(bookName ?? "") \(chapter.name)"
-        // 6.27.18: IUO isn't implicitly unwrapped, so using ??.
-        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
-        // Register cell classes
+        // Register cell classes (or storyboard can register a nib file)
 //        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
 
         // Do any additional setup after loading the view.
+        
+        navigationItem.title = "\(bookName ?? "") \(chapter.name)"
+        // 6.27.18: IUO isn't implicitly unwrapped, so using ??.
+        
+        self.collectionView?.allowsMultipleSelection = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,10 +55,9 @@ class VerseCollectionViewController: UICollectionViewController {
 
     // MARK: UICollectionViewDataSource
 
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
+//    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        return 1
+//    }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
@@ -70,6 +71,7 @@ class VerseCollectionViewController: UICollectionViewController {
         let verseCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! VerseCollectionViewCell
         
         verseCollectionViewCell.layer.borderWidth = 1
+        verseCollectionViewCell.layer.cornerRadius = 4
         
         // Populate the cell.
         verseCollectionViewCell.label.text = String(indexPath.row + 1)
@@ -86,12 +88,10 @@ class VerseCollectionViewController: UICollectionViewController {
     }
     */
 
-    /*
     // Uncomment this method to specify if the specified item should be selected
-    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-    */
+//    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+//        return true
+//    }
 
     /*
     // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item

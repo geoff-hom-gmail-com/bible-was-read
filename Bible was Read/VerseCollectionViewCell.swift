@@ -14,4 +14,14 @@ class VerseCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var label: UILabel!
     
+    override var isSelected: Bool {
+        didSet {
+            if self.isSelected {
+                self.backgroundColor = UIColor.green
+            }
+            else {
+                self.backgroundColor = nil
+            }
+        }
+    }
 }
