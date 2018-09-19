@@ -69,10 +69,10 @@ class VerseCollectionViewController: UICollectionViewController {
         
         let verseCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! VerseCollectionViewCell
         
+        verseCollectionViewCell.layer.borderWidth = 1
+        
         // Populate the cell.
-        // TODO: this should be the verse number
         verseCollectionViewCell.label.text = String(indexPath.row + 1)
-//        verseCollectionViewCell.label.text = "453" String(indexPath.row + 1)
 
         return verseCollectionViewCell
     }
