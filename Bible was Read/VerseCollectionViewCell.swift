@@ -24,4 +24,15 @@ class VerseCollectionViewCell: UICollectionViewCell {
             }
         }
     }
+    
+    override var isHighlighted: Bool {
+        didSet {
+            if self.isHighlighted && !self.isSelected {
+                self.backgroundColor = UIColor.green
+            }
+            else {
+                self.backgroundColor = nil
+            }
+        }
+    }
 }
