@@ -7,13 +7,16 @@
 //
 
 import UIKit
+import CoreData
 
 class BookOfTheBibleTableViewController: UITableViewController {
-
     // MARK: Properties
     
     var booksOfTheBible: [BookOfTheBible]!
     // Initialized in viewDidLoad().
+
+    var persistentContainer: NSPersistentContainer!
+    // Conceptually a constant, as the value is set by the parent and never changed.
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +29,8 @@ class BookOfTheBibleTableViewController: UITableViewController {
         
         // Get table data.
         booksOfTheBible = BookOfTheBibleManager.savedBooks()
+        // make this a subclass of PC? Unless I can do it with what PC has (load data, load default data, create default data if not there)
+//        booksOfTheBible = persistentContainer.savedBooks()
     }
 
     override func didReceiveMemoryWarning() {
@@ -93,8 +98,6 @@ class BookOfTheBibleTableViewController: UITableViewController {
     // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Prepare before navigation segue.
-
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
         case "ShowChapters":
@@ -109,10 +112,8 @@ class BookOfTheBibleTableViewController: UITableViewController {
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-//            symptomDetailViewController.delegate = self
             let selectedBookOfTheBible = booksOfTheBible[indexPath.row]
             chapterTableViewController.bookOfTheBible = selectedBookOfTheBible
-//            symptomDetailViewController.symptomIndex = indexPath.row
         default:
             ()
         }

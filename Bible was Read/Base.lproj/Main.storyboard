@@ -13,7 +13,7 @@
         <!--Bible was Read-->
         <scene sceneID="lgg-fV-fGO">
             <objects>
-                <tableViewController id="oP2-j7-r0b" sceneMemberID="viewController">
+                <tableViewController id="oP2-j7-r0b" customClass="MainMenuTableViewController" customModule="Bible_was_Read" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="cv8-9d-x3c">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -38,7 +38,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <segue destination="URy-r8-y9q" kind="show" id="gN9-bq-q2o"/>
+                                            <segue destination="URy-r8-y9q" kind="show" identifier="ShowBooksOfTheBible" id="gN9-bq-q2o"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" textLabel="0ZP-UN-MO8" style="IBUITableViewCellStyleDefault" id="1PD-xJ-Y6D">

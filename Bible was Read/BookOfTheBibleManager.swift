@@ -23,21 +23,25 @@ class BookOfTheBibleManager: NSObject {
     /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
     static func blankBooks() -> [BookOfTheBible] {
         
+//        let blankBookOfTheBible = BookOfTheBible(context: persistentContainer.viewContext)
+//        blankBookOfTheBible.name = "Can't Find Blank Books"
+//        return [blankBookOfTheBible]
+        
         // Blank Bible data is in a text file. Read it and parse.
         guard let blankBooksURL = Bundle.main.url(forResource: BlankBooksFilename, withExtension: BlankBooksSuffix) else {
-            
+
             os_log("Can't find file with blank books: %@.", log: OSLog.default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
             return [BookOfTheBible(name: "Can't Find Blank Books")]
         }
         do {
             let csvText = try String(contentsOf: blankBooksURL, encoding: .utf8)
 //            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
-            
+
             // Clean up newlines.
             let cleanedCSVText = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
 
             var lines = cleanedCSVText.components(separatedBy: CharacterSet.newlines)
-            
+
             // Assume a header of Book, Chapter, Verse. Remove it.
             let header = lines.removeFirst()
             os_log("Header: %@.", log: OSLog.default, type: .debug, header)
@@ -54,7 +58,7 @@ class BookOfTheBibleManager: NSObject {
             var books = [BookOfTheBible]()
             for line in lines {
                 let chapterInfo = line.components(separatedBy: ",")
-                
+
                 // If new book name, add old book and make new book.
                 let bookName = chapterInfo[0]
                 if bookName != currentBookName {
@@ -63,7 +67,7 @@ class BookOfTheBibleManager: NSObject {
                     currentBookName = bookName
                     currentBook = BookOfTheBible(name: currentBookName)
                 }
-                
+
                 // Add chapter to book.
                 let chapterName = chapterInfo[1]
                 var chapter = Chapter(name: chapterName)
@@ -74,10 +78,10 @@ class BookOfTheBibleManager: NSObject {
                 }
                 currentBook.chapters.append(chapter)
             }
-            
+
             // Add last book.
             books.append(currentBook)
-            
+
             return books
         }
         catch {
@@ -133,9 +137,10 @@ class BookOfTheBibleManager: NSObject {
 //        }
 //    }
     
+    // Return saved books of the Bible. If none, return default (blank) data.
     static func savedBooks() -> [BookOfTheBible]? {
-        // Return saved books of the Bible. If none, return default (blank) data.
-        
+//        return BookOfTheBibleManager.blankBooks(persistentContainer: persistentContainer)
+
         // Swift 4 Codable.
         let url = BookOfTheBibleManager.SavedBooksURL
         let decoder = JSONDecoder()

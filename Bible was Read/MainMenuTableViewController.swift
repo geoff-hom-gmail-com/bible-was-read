@@ -1,22 +1,22 @@
 //
-//  ChapterTableViewController.swift
+//  MainMenuTableViewController.swift
 //  Bible was Read
 //
-//  Created by Geoff Hom on 6/26/18.
+//  Created by Geoff Hom on 9/20/18.
 //  Copyright © 2018 Geoff Hom. All rights reserved.
 //
 
 import UIKit
+import CoreData
 
-class ChapterTableViewController: UITableViewController {
+class MainMenuTableViewController: UITableViewController {
     // MARK: Properties
-    
-    var bookOfTheBible: BookOfTheBible!
+
+    var persistentContainer: NSPersistentContainer!
     // Conceptually a constant, as the value is set by the parent and never changed.
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = bookOfTheBible.name
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -25,33 +25,27 @@ class ChapterTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        // #warning Incomplete implementation, return the number of sections
+        return 0
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bookOfTheBible.chapters.count
+        // #warning Incomplete implementation, return the number of rows
+        return 0
     }
-    
+
+    /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // Table-view cells are reused and should be dequeued.
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ChapterTableViewCell", for: indexPath)
-        
-        // Populate the cell.
-//        let chapterNumber = chapters[indexPath.row]
-        cell.textLabel?.text = String(indexPath.row + 1)
-        // could include % done, % left, # verses left, etc. Motivation!
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
+
+        // Configure the cell...
+
         return cell
     }
+    */
 
     /*
     // Override to support conditional editing of the table view.
@@ -91,30 +85,15 @@ class ChapterTableViewController: UITableViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Prepare before navigation segue.
-        
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
-        case "ShowVerses":
-            guard let verseCollectionViewController = segue.destination as? VerseCollectionViewController else {
+        case "ShowBooksOfTheBible":
+            guard let bookOfTheBibleTableViewController = segue.destination as? BookOfTheBibleTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            
-            // Set selected book's name.
-            verseCollectionViewController.bookName = bookOfTheBible.name
-
-            // Set selected chapter.
-            guard let selectedCell = sender as? UITableViewCell else {
-                fatalError("Unexpected sender: \(String(describing: sender))")
-            }
-            guard let indexPath = tableView.indexPath(for: selectedCell) else {
-                fatalError("The selected cell is not being displayed by the table")
-            }
-            let selectedChapter = bookOfTheBible.chapters[indexPath.row]
-            verseCollectionViewController.chapter = selectedChapter
+            bookOfTheBibleTableViewController.persistentContainer = persistentContainer
         default:
             ()
         }
     }
-
 }

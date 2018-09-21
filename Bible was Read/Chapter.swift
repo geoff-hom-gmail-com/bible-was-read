@@ -9,9 +9,9 @@
 import Foundation
 
 struct Chapter: Codable {
-    
+
     // MARK: Properties
-    
+
     var name: String
 
     var wasRead: Bool
@@ -20,10 +20,10 @@ struct Chapter: Codable {
     // A chapter is created, then verses are added.
 
     // MARK: Initialization
-    
+
     // (temp) call: Chapter(name: "1", wasRead: true)
     init(name: String, wasRead: Bool = false) {
-        
+
         // Initialize stored properties.
         self.name = name
         self.wasRead = wasRead

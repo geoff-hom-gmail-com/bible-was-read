@@ -75,6 +75,9 @@ class VerseCollectionViewController: UICollectionViewController {
         
         // Populate the cell.
         verseCollectionViewCell.label.text = String(indexPath.row + 1)
+        // If verse was read, show that.
+        let verse = self.chapter.verses[indexPath.row]
+        verseCollectionViewCell.isSelected = verse.wasRead
 
         return verseCollectionViewCell
     }
@@ -92,6 +95,15 @@ class VerseCollectionViewController: UICollectionViewController {
 //    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
 //        return true
 //    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        // Mark verse as read.
+        // here, we need to do something that leads to it being saved to disk
+        // but I guess this class shouldn't know anything about whether it saves; it just needs to know the right verse to set. self.chapter.verses doesn't work, as verses (and chapter) are structs and passed by value. Though if I call something that leads to a write, will it cause everything to read? that seems weird. Makes more sense to have an exit segue/etc. that tells parent to reloadData
+        self.chapter.verses[indexPath.row].wasRead = true
+        os_log("Was read!: %i.", log: OSLog.default, type: .info, indexPath.row)
+
+    }
 
     /*
     // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
