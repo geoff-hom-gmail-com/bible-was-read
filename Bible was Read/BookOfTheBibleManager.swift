@@ -23,14 +23,10 @@ class BookOfTheBibleManager: NSObject {
     /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
     static func blankBooks() -> [BookOfTheBible] {
         
-//        let blankBookOfTheBible = BookOfTheBible(context: persistentContainer.viewContext)
-//        blankBookOfTheBible.name = "Can't Find Blank Books"
-//        return [blankBookOfTheBible]
-        
         // Blank Bible data is in a text file. Read it and parse.
         guard let blankBooksURL = Bundle.main.url(forResource: BlankBooksFilename, withExtension: BlankBooksSuffix) else {
 
-            os_log("Can't find file with blank books: %@.", log: OSLog.default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
+            os_log("Can't find file with blank books: %@.", log: .default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
             return [BookOfTheBible(name: "Can't Find Blank Books")]
         }
         do {
@@ -44,11 +40,11 @@ class BookOfTheBibleManager: NSObject {
 
             // Assume a header of Book, Chapter, Verse. Remove it.
             let header = lines.removeFirst()
-            os_log("Header: %@.", log: OSLog.default, type: .debug, header)
+            os_log("Header: %@.", log: .default, type: .debug, header)
 
             // Initialize first book.
             guard let firstLine = lines.first else {
-                os_log("File has only one line, which should be the header.", log: OSLog.default, type: .debug)
+                os_log("File has only one line, which should be the header.", log: .default, type: .debug)
                 return [BookOfTheBible(name: "File has only header")]
             }
             let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
@@ -149,7 +145,7 @@ class BookOfTheBibleManager: NSObject {
             let books = try decoder.decode([BookOfTheBible].self, from: data)
             return books
         } catch {
-            os_log("Unable to load symptoms: %@. Loading blank data.", log: OSLog.default, type: .debug, String(describing: error))
+            os_log("Unable to load saved books: %@. Loading blank data.", log: .default, type: .debug, String(describing: error))
             return BookOfTheBibleManager.blankBooks()
         }
     }

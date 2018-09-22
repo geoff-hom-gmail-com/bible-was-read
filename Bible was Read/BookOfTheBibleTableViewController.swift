@@ -8,16 +8,18 @@
 
 import UIKit
 import CoreData
+import os.log
 
 class BookOfTheBibleTableViewController: UITableViewController {
     // MARK: Properties
     
-    var booksOfTheBible: [BookOfTheBible]!
     // Initialized in viewDidLoad().
+    var booksOfTheBible: [BookOfTheBible]!
+    var booksOfTheBible2: [BookOfTheBible2]!
 
-    var persistentContainer: NSPersistentContainer!
     // Conceptually a constant, as the value is set by the parent and never changed.
-
+    var biblePersistentContainer: BiblePersistentContainer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -30,7 +32,9 @@ class BookOfTheBibleTableViewController: UITableViewController {
         // Get table data.
         booksOfTheBible = BookOfTheBibleManager.savedBooks()
         // make this a subclass of PC? Unless I can do it with what PC has (load data, load default data, create default data if not there)
-//        booksOfTheBible = persistentContainer.savedBooks()
+        // ok, how do I load data in CD?
+        // should this be savedBooks() or more like loadBooks()?
+        booksOfTheBible2 = biblePersistentContainer.savedBooks()
     }
 
     override func didReceiveMemoryWarning() {

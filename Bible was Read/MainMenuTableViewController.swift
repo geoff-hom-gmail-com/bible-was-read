@@ -8,12 +8,13 @@
 
 import UIKit
 import CoreData
+import os.log
 
 class MainMenuTableViewController: UITableViewController {
     // MARK: Properties
 
-    var persistentContainer: NSPersistentContainer!
     // Conceptually a constant, as the value is set by the parent and never changed.
+    var biblePersistentContainer: BiblePersistentContainer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,15 +28,15 @@ class MainMenuTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 0
-    }
+//    override func numberOfSections(in tableView: UITableView) -> Int {
+//        // #warning Incomplete implementation, return the number of sections
+//        return 0
+//    }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 0
-    }
+//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        // #warning Incomplete implementation, return the number of rows
+//        return 0
+//    }
 
     /*
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -91,7 +92,8 @@ class MainMenuTableViewController: UITableViewController {
             guard let bookOfTheBibleTableViewController = segue.destination as? BookOfTheBibleTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            bookOfTheBibleTableViewController.persistentContainer = persistentContainer
+            os_log("prepare for segue!", log: .default, type: .debug)
+            bookOfTheBibleTableViewController.biblePersistentContainer = biblePersistentContainer
         default:
             ()
         }
