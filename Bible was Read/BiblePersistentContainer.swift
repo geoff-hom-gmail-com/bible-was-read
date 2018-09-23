@@ -36,7 +36,7 @@ class BiblePersistentContainer: NSPersistentContainer {
     
     // MARK: - ??
     
-    func blankBooks() -> [BookOfTheBible2] {
+    func blankBooks() -> [BookOfTheBible] {
         /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
         // for now, let's just load this from the JSON file
 
@@ -46,9 +46,9 @@ class BiblePersistentContainer: NSPersistentContainer {
             os_log("Can't find file with blank books: %@.", log: .default, type: .error, BiblePersistentContainer.BlankBooksFilename + BiblePersistentContainer.BlankBooksSuffix)
             
             // what context does it use here? it could use a default, but how does it know where that is?
-            let genericBook = BookOfTheBible2()
+            let genericBook = BookOfTheBible(context: viewContext)
             genericBook.name = "Can't Find Blank Books"
-//            let genericBook2 = BookOfTheBible2(context: viewContext)
+//            let genericBook2 = BookOfTheBible(context: viewContext)
 
             return [genericBook]
         }
@@ -63,13 +63,13 @@ class BiblePersistentContainer: NSPersistentContainer {
             
             // Assume a header of Book, Chapter, Verse. Remove it.
             let header = lines.removeFirst()
-            os_log("Header: %@.", log: OSLog.default, type: .debug, header)
+            os_log("Header: %@.", log: .default, type: .debug, header)
             
             // Initialize first book.
             guard let firstLine = lines.first else {
                 os_log("File has only one line, which should be the header.", log: .default, type: .debug)
                 
-                let genericBook = BookOfTheBible2()
+                let genericBook = BookOfTheBible(context: viewContext)
                 genericBook.name = "File has only header"
                 
                 return [genericBook]
@@ -79,11 +79,11 @@ class BiblePersistentContainer: NSPersistentContainer {
             var currentBookName = firstBookFirstChapterInfo[0]
             
             
-            var currentBook = BookOfTheBible2()
+            var currentBook = BookOfTheBible(context: viewContext)
             currentBook.name = currentBookName
             
             
-            var books = [BookOfTheBible2]()
+            var books = [BookOfTheBible]()
             for line in lines {
                 let chapterInfo = line.components(separatedBy: ",")
                 
@@ -93,17 +93,18 @@ class BiblePersistentContainer: NSPersistentContainer {
                     books.append(currentBook)
                     
                     currentBookName = bookName
-                    currentBook = BookOfTheBible2()
+                    currentBook = BookOfTheBible(context: viewContext)
                     currentBook.name = currentBookName
 
                 }
                 
                 // Add chapter to book.
                 let chapterName = chapterInfo[1]
-                var chapter = Chapter(name: chapterName)
+                //TODO: fix. These are old chapters; want Core Data chapters. And verses.
+                var chapter = ChapterOld(name: chapterName)
                 if let numVerses = Int(chapterInfo[2]) {
                     for _ in 1...numVerses {
-                        chapter.verses.append(Verse())
+                        chapter.verses.append(VerseOld())
                     }
                 }
 //                currentBook.chapters.append(chapter)
@@ -124,7 +125,7 @@ class BiblePersistentContainer: NSPersistentContainer {
         catch {
             os_log("Blank-books file exists, but can't read it: %@.", log: .default, type: .debug, String(describing: error))
             
-            let genericBook = BookOfTheBible2()
+            let genericBook = BookOfTheBible(context: viewContext)
             genericBook.name = "Can't Read Blank Books"
             
             return [genericBook]
@@ -199,21 +200,22 @@ class BiblePersistentContainer: NSPersistentContainer {
 //        }
 //    }
     
-    // Return saved books of the Bible. If none, return default data.
-    // Default should be a Bible with nothing read(blank Bible).
-    func savedBooks() -> [BookOfTheBible2] {
-        os_log("BPC savedBooks called", log: .default, type: .debug)
-        let request: NSFetchRequest<BookOfTheBible2> = BookOfTheBible2.fetchRequest()
-        
+    func savedBooks() -> [BookOfTheBible] {
+        // Return saved books of the Bible. Else, return default data (a Bible with nothing read; i.e., "blank").
+        let request: NSFetchRequest<BookOfTheBible> = BookOfTheBible.fetchRequest()
         do {
             let books = try viewContext.fetch(request)
-            // I think this worked even though it was empty/nil, because we haven't saved anything yet and the line below still came up.
-            os_log("Fetch worked!", log: .default, type: .debug)
-            return books
+            if books.isEmpty {
+                os_log("No books of the Bible were found. Loading default data.", log: .default, type: .default)
+                return blankBooks()
+            } else {
+                return books
+            }
         } catch {
-            os_log("Unable to load saved books: %@. Loading blank data.", log: .default, type: .error, String(describing: error))
+            os_log("Unable to load saved books of the Bible: %@. Loading default data.", log: .default, type: .default, String(describing: error))
             return blankBooks()
         }
+        // When fetching the data, it can fail two ways: Fetch throws an error, or fetch returns an empty array. In both cases, we want to return default data.
     }
 
     // Return saved books of the Bible. If none, return default (blank) data.

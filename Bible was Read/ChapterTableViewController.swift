@@ -11,6 +11,7 @@ import UIKit
 class ChapterTableViewController: UITableViewController {
     // MARK: Properties
     
+//    var bookOfTheBible: BookOfTheBibleOld!
     var bookOfTheBible: BookOfTheBible!
     // Conceptually a constant, as the value is set by the parent and never changed.
 
@@ -37,7 +38,9 @@ class ChapterTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bookOfTheBible.chapters.count
+        //TODO: fix
+        //        return bookOfTheBible.chapters.count
+        return 1
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,8 +113,9 @@ class ChapterTableViewController: UITableViewController {
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-            let selectedChapter = bookOfTheBible.chapters[indexPath.row]
-            verseCollectionViewController.chapter = selectedChapter
+            //TODO: fix. ("Expression type '@lvalue NSOrderedSet?' is ambiguous without more context")
+//            let selectedChapter = bookOfTheBible.chapters[indexPath.row]
+//            verseCollectionViewController.chapter = selectedChapter
         default:
             ()
         }

@@ -18,7 +18,7 @@ class VerseCollectionViewController: UICollectionViewController {
     var bookName: String!
     // Conceptually a constant, as the value is set by the parent and never changed.
 
-    var chapter: Chapter!
+    var chapter: ChapterOld!
     // Conceptually a constant, as the value is set by the parent and never changed.
     
     override func viewDidLoad() {

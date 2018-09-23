@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct BookOfTheBible: Codable {
+struct BookOfTheBibleOld: Codable {
 
     // MARK: Properties
 
@@ -18,7 +18,7 @@ struct BookOfTheBible: Codable {
 
     var wasRead: Bool
 
-    var chapters = [Chapter]()
+    var chapters = [ChapterOld]()
     // A book of the Bible is created, then chapters are added.
 
     // MARK: Initialization

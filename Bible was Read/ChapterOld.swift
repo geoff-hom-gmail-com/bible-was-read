@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Chapter: Codable {
+struct ChapterOld: Codable {
 
     // MARK: Properties
 
@@ -16,7 +16,7 @@ struct Chapter: Codable {
 
     var wasRead: Bool
 
-    var verses = [Verse]()
+    var verses = [VerseOld]()
     // A chapter is created, then verses are added.
 
     // MARK: Initialization

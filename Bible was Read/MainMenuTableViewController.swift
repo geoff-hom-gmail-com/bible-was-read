@@ -92,7 +92,6 @@ class MainMenuTableViewController: UITableViewController {
             guard let bookOfTheBibleTableViewController = segue.destination as? BookOfTheBibleTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            os_log("prepare for segue!", log: .default, type: .debug)
             bookOfTheBibleTableViewController.biblePersistentContainer = biblePersistentContainer
         default:
             ()

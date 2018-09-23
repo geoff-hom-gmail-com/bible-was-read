@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Verse: Codable {
+struct VerseOld: Codable {
     
     // MARK: Properties
     

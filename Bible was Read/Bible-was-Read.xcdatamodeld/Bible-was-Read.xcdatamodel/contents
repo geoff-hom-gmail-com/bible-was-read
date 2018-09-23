@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14315.18" systemVersion="17G65" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="BookOfTheBible2" representedClassName="BookOfTheBible2" syncable="YES" codeGenerationType="class">
+    <entity name="BookOfTheBible" representedClassName="BookOfTheBible" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String" defaultValueString="Unnamed" syncable="YES"/>
         <attribute name="wasRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="chapters" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Chapter2" inverseName="book" inverseEntity="Chapter2" syncable="YES"/>
@@ -8,7 +8,7 @@
     <entity name="Chapter2" representedClassName="Chapter2" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="wasRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="book" maxCount="1" deletionRule="Nullify" destinationEntity="BookOfTheBible2" inverseName="chapters" inverseEntity="BookOfTheBible2" syncable="YES"/>
+        <relationship name="book" maxCount="1" deletionRule="Nullify" destinationEntity="BookOfTheBible" inverseName="chapters" inverseEntity="BookOfTheBible" syncable="YES"/>
         <relationship name="verses" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Verse2" inverseName="chapter" inverseEntity="Verse2" syncable="YES"/>
     </entity>
     <entity name="Verse2" representedClassName="Verse2" syncable="YES" codeGenerationType="class">
@@ -16,8 +16,8 @@
         <relationship name="chapter" maxCount="1" deletionRule="Nullify" destinationEntity="Chapter2" inverseName="verses" inverseEntity="Chapter2" syncable="YES"/>
     </entity>
     <elements>
-        <element name="BookOfTheBible2" positionX="-36" positionY="18" width="128" height="90"/>
-        <element name="Chapter2" positionX="-54" positionY="-9" width="128" height="105"/>
-        <element name="Verse2" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="BookOfTheBible" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Chapter2" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="Verse2" positionX="0" positionY="0" width="0" height="0"/>
     </elements>
 </model>

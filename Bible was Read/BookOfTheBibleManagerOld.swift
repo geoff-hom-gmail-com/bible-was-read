@@ -9,7 +9,7 @@
 import Foundation
 import os.log
 
-class BookOfTheBibleManager: NSObject {
+class BookOfTheBibleManagerOld: NSObject {
 
     // MARK: File Paths
     
@@ -21,13 +21,13 @@ class BookOfTheBibleManager: NSObject {
     // MARK: Default Data
     
     /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
-    static func blankBooks() -> [BookOfTheBible] {
+    static func blankBooks() -> [BookOfTheBibleOld] {
         
         // Blank Bible data is in a text file. Read it and parse.
         guard let blankBooksURL = Bundle.main.url(forResource: BlankBooksFilename, withExtension: BlankBooksSuffix) else {
 
             os_log("Can't find file with blank books: %@.", log: .default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
-            return [BookOfTheBible(name: "Can't Find Blank Books")]
+            return [BookOfTheBibleOld(name: "Can't Find Blank Books")]
         }
         do {
             let csvText = try String(contentsOf: blankBooksURL, encoding: .utf8)
@@ -45,13 +45,13 @@ class BookOfTheBibleManager: NSObject {
             // Initialize first book.
             guard let firstLine = lines.first else {
                 os_log("File has only one line, which should be the header.", log: .default, type: .debug)
-                return [BookOfTheBible(name: "File has only header")]
+                return [BookOfTheBibleOld(name: "File has only header")]
             }
             let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
 
             var currentBookName = firstBookFirstChapterInfo[0]
-            var currentBook = BookOfTheBible(name: currentBookName)
-            var books = [BookOfTheBible]()
+            var currentBook = BookOfTheBibleOld(name: currentBookName)
+            var books = [BookOfTheBibleOld]()
             for line in lines {
                 let chapterInfo = line.components(separatedBy: ",")
 
@@ -61,15 +61,15 @@ class BookOfTheBibleManager: NSObject {
                     books.append(currentBook)
 
                     currentBookName = bookName
-                    currentBook = BookOfTheBible(name: currentBookName)
+                    currentBook = BookOfTheBibleOld(name: currentBookName)
                 }
 
                 // Add chapter to book.
                 let chapterName = chapterInfo[1]
-                var chapter = Chapter(name: chapterName)
+                var chapter = ChapterOld(name: chapterName)
                 if let numVerses = Int(chapterInfo[2]) {
                     for _ in 1...numVerses {
-                        chapter.verses.append(Verse())
+                        chapter.verses.append(VerseOld())
                     }
                 }
                 currentBook.chapters.append(chapter)
@@ -82,7 +82,7 @@ class BookOfTheBibleManager: NSObject {
         }
         catch {
             os_log("Blank-books file exists, but can't read it: %@.", log: OSLog.default, type: .debug, String(describing: error))
-            return [BookOfTheBible(name: "Can't Read Blank Books")]
+            return [BookOfTheBibleOld(name: "Can't Read Blank Books")]
         }
     }
     
@@ -134,19 +134,19 @@ class BookOfTheBibleManager: NSObject {
 //    }
     
     // Return saved books of the Bible. If none, return default (blank) data.
-    static func savedBooks() -> [BookOfTheBible]? {
+    static func savedBooks() -> [BookOfTheBibleOld]? {
 //        return BookOfTheBibleManager.blankBooks(persistentContainer: persistentContainer)
 
         // Swift 4 Codable.
-        let url = BookOfTheBibleManager.SavedBooksURL
+        let url = BookOfTheBibleManagerOld.SavedBooksURL
         let decoder = JSONDecoder()
         do {
             let data = try Data(contentsOf: url)
-            let books = try decoder.decode([BookOfTheBible].self, from: data)
+            let books = try decoder.decode([BookOfTheBibleOld].self, from: data)
             return books
         } catch {
             os_log("Unable to load saved books: %@. Loading blank data.", log: .default, type: .debug, String(describing: error))
-            return BookOfTheBibleManager.blankBooks()
+            return BookOfTheBibleManagerOld.blankBooks()
         }
     }
 }

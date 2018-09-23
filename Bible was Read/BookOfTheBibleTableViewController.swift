@@ -13,12 +13,12 @@ import os.log
 class BookOfTheBibleTableViewController: UITableViewController {
     // MARK: Properties
     
-    // Initialized in viewDidLoad().
+    var booksOfTheBibleOld: [BookOfTheBibleOld]!
     var booksOfTheBible: [BookOfTheBible]!
-    var booksOfTheBible2: [BookOfTheBible2]!
-
-    // Conceptually a constant, as the value is set by the parent and never changed.
+    // Initialized in viewDidLoad().
+    
     var biblePersistentContainer: BiblePersistentContainer!
+    // Conceptually a constant, as the value is set by the parent and never changed.
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,11 +30,11 @@ class BookOfTheBibleTableViewController: UITableViewController {
 //         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         // Get table data.
-        booksOfTheBible = BookOfTheBibleManager.savedBooks()
+//        booksOfTheBibleOld = BookOfTheBibleManagerOld.savedBooks()
         // make this a subclass of PC? Unless I can do it with what PC has (load data, load default data, create default data if not there)
         // ok, how do I load data in CD?
         // should this be savedBooks() or more like loadBooks()?
-        booksOfTheBible2 = biblePersistentContainer.savedBooks()
+        booksOfTheBible = biblePersistentContainer.savedBooks()
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,6 +49,7 @@ class BookOfTheBibleTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return booksOfTheBibleOld.count
         return booksOfTheBible.count
     }
 
@@ -58,6 +59,7 @@ class BookOfTheBibleTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath)
         
         // Populate the cell.
+//        let book = booksOfTheBibleOld[indexPath.row]
         let book = booksOfTheBible[indexPath.row]
         cell.textLabel?.text = book.name
         
@@ -116,6 +118,7 @@ class BookOfTheBibleTableViewController: UITableViewController {
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
+//            let selectedBookOfTheBible = booksOfTheBibleOld[indexPath.row]
             let selectedBookOfTheBible = booksOfTheBible[indexPath.row]
             chapterTableViewController.bookOfTheBible = selectedBookOfTheBible
         default:
