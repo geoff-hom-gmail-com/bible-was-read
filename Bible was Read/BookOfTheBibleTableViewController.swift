@@ -110,17 +110,15 @@ class BookOfTheBibleTableViewController: UITableViewController {
             guard let chapterTableViewController = segue.destination as? ChapterTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            
-            // Set selected book.
             guard let selectedCell = sender as? UITableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-//            let selectedBookOfTheBible = booksOfTheBibleOld[indexPath.row]
             let selectedBookOfTheBible = booksOfTheBible[indexPath.row]
             chapterTableViewController.bookOfTheBible = selectedBookOfTheBible
+            // Set selected book.
         default:
             ()
         }

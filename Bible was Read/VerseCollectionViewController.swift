@@ -18,7 +18,8 @@ class VerseCollectionViewController: UICollectionViewController {
     var bookName: String!
     // Conceptually a constant, as the value is set by the parent and never changed.
 
-    var chapter: ChapterOld!
+//    var chapter: ChapterOld!
+    var chapter: Chapter!
     // Conceptually a constant, as the value is set by the parent and never changed.
     
     override func viewDidLoad() {
@@ -32,7 +33,7 @@ class VerseCollectionViewController: UICollectionViewController {
 
         // Do any additional setup after loading the view.
         
-        navigationItem.title = "\(bookName ?? "") \(chapter.name)"
+        navigationItem.title = "\(bookName ?? "") \(chapter.name ?? "")"
         // 6.27.18: IUO isn't implicitly unwrapped, so using ??.
         
         self.collectionView?.allowsMultipleSelection = true
@@ -62,8 +63,8 @@ class VerseCollectionViewController: UICollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         // temp check
-        os_log("verses: %i.", log: OSLog.default, type: .info, chapter.verses.count)
-        return chapter.verses.count
+        os_log("verses: %i.", log: .default, type: .debug, chapter.verses?.count ?? 0)
+        return chapter.verses?.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -76,8 +77,9 @@ class VerseCollectionViewController: UICollectionViewController {
         // Populate the cell.
         verseCollectionViewCell.label.text = String(indexPath.row + 1)
         // If verse was read, show that.
-        let verse = self.chapter.verses[indexPath.row]
-        verseCollectionViewCell.isSelected = verse.wasRead
+        //TODO: fix
+//        let verse = self.chapter.verses[indexPath.row]
+//        verseCollectionViewCell.isSelected = verse.wasRead
 
         return verseCollectionViewCell
     }
@@ -100,8 +102,9 @@ class VerseCollectionViewController: UICollectionViewController {
         // Mark verse as read.
         // here, we need to do something that leads to it being saved to disk
         // but I guess this class shouldn't know anything about whether it saves; it just needs to know the right verse to set. self.chapter.verses doesn't work, as verses (and chapter) are structs and passed by value. Though if I call something that leads to a write, will it cause everything to read? that seems weird. Makes more sense to have an exit segue/etc. that tells parent to reloadData
-        self.chapter.verses[indexPath.row].wasRead = true
-        os_log("Was read!: %i.", log: OSLog.default, type: .info, indexPath.row)
+        //TODO: fix
+//        self.chapter.verses[indexPath.row].wasRead = true
+        os_log("Was read!: %i.", log: .default, type: .debug, indexPath.row)
 
     }
 

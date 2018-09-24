@@ -36,19 +36,16 @@ class BiblePersistentContainer: NSPersistentContainer {
     
     // MARK: - ??
     
+    //TODO: Once we're reading from a proper JSON file, go thru this function and lint it manually.
     func blankBooks() -> [BookOfTheBible] {
         /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
-        // for now, let's just load this from the JSON file
-
         // Blank Bible data is in a text file. Read it and parse.
         guard let blankBooksURL = Bundle.main.url(forResource: BiblePersistentContainer.BlankBooksFilename, withExtension: BiblePersistentContainer.BlankBooksSuffix) else {
             
             os_log("Can't find file with blank books: %@.", log: .default, type: .error, BiblePersistentContainer.BlankBooksFilename + BiblePersistentContainer.BlankBooksSuffix)
             
-            // what context does it use here? it could use a default, but how does it know where that is?
             let genericBook = BookOfTheBible(context: viewContext)
             genericBook.name = "Can't Find Blank Books"
-//            let genericBook2 = BookOfTheBible(context: viewContext)
 
             return [genericBook]
         }
@@ -68,21 +65,16 @@ class BiblePersistentContainer: NSPersistentContainer {
             // Initialize first book.
             guard let firstLine = lines.first else {
                 os_log("File has only one line, which should be the header.", log: .default, type: .debug)
-                
                 let genericBook = BookOfTheBible(context: viewContext)
                 genericBook.name = "File has only header"
-                
                 return [genericBook]
             }
             let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
             
             var currentBookName = firstBookFirstChapterInfo[0]
-            
-            
             var currentBook = BookOfTheBible(context: viewContext)
             currentBook.name = currentBookName
-            
-            
+    
             var books = [BookOfTheBible]()
             for line in lines {
                 let chapterInfo = line.components(separatedBy: ",")
@@ -95,26 +87,18 @@ class BiblePersistentContainer: NSPersistentContainer {
                     currentBookName = bookName
                     currentBook = BookOfTheBible(context: viewContext)
                     currentBook.name = currentBookName
-
                 }
                 
                 // Add chapter to book.
                 let chapterName = chapterInfo[1]
-                //TODO: fix. These are old chapters; want Core Data chapters. And verses.
-                var chapter = ChapterOld(name: chapterName)
+                let chapter = Chapter(context: viewContext)
+                chapter.name = chapterName
                 if let numVerses = Int(chapterInfo[2]) {
                     for _ in 1...numVerses {
-                        chapter.verses.append(VerseOld())
+                        chapter.addToVerses(Verse(context: viewContext))
                     }
                 }
-//                currentBook.chapters.append(chapter)
-                // hmm this is an nsset?, not a swift Set, etc. Do I want to convert it to a swift type, or just use nsset stuff?
-                // keeping this as an nsorderedset for now; may change to an array if a pain?
-//                let chaptersMutableSet = currentBook.chapters
-//                mutableSet.add(chapter)
-                // ah, this would have to be Chapter2; for now blank it
-//                currentBook.addToChapters(<#T##value: Chapter2##Chapter2#>)
-//                currentBook.addToChapters(chapter)
+                currentBook.addToChapters(chapter)
             }
             
             // Add last book.
@@ -201,7 +185,7 @@ class BiblePersistentContainer: NSPersistentContainer {
 //    }
     
     func savedBooks() -> [BookOfTheBible] {
-        // Return saved books of the Bible. Else, return default data (a Bible with nothing read; i.e., "blank").
+        /// Return saved books of the Bible. Else, return default data (a Bible with nothing read; i.e., "blank").
         let request: NSFetchRequest<BookOfTheBible> = BookOfTheBible.fetchRequest()
         do {
             let books = try viewContext.fetch(request)

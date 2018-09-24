@@ -38,9 +38,7 @@ class ChapterTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //TODO: fix
-        //        return bookOfTheBible.chapters.count
-        return 1
+        return bookOfTheBible.chapters?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -49,7 +47,6 @@ class ChapterTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChapterTableViewCell", for: indexPath)
         
         // Populate the cell.
-//        let chapterNumber = chapters[indexPath.row]
         cell.textLabel?.text = String(indexPath.row + 1)
         // could include % done, % left, # verses left, etc. Motivation!
         
@@ -94,8 +91,6 @@ class ChapterTableViewController: UITableViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Prepare before navigation segue.
-        
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
         case "ShowVerses":
@@ -103,22 +98,22 @@ class ChapterTableViewController: UITableViewController {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             
-            // Set selected book's name.
             verseCollectionViewController.bookName = bookOfTheBible.name
-
-            // Set selected chapter.
+            // Set selected book's name.
+            
             guard let selectedCell = sender as? UITableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-            //TODO: fix. ("Expression type '@lvalue NSOrderedSet?' is ambiguous without more context")
-//            let selectedChapter = bookOfTheBible.chapters[indexPath.row]
-//            verseCollectionViewController.chapter = selectedChapter
+            guard let selectedChapter = bookOfTheBible.chapters?[indexPath.row] as? Chapter else {
+                fatalError("Could not get selected chapter.")
+            }
+            verseCollectionViewController.chapter = selectedChapter
+            // Set selected chapter.
         default:
             ()
         }
     }
-
 }

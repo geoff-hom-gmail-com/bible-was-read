@@ -3,21 +3,21 @@
     <entity name="BookOfTheBible" representedClassName="BookOfTheBible" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String" defaultValueString="Unnamed" syncable="YES"/>
         <attribute name="wasRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="chapters" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Chapter2" inverseName="book" inverseEntity="Chapter2" syncable="YES"/>
+        <relationship name="chapters" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Chapter" inverseName="book" inverseEntity="Chapter" syncable="YES"/>
     </entity>
-    <entity name="Chapter2" representedClassName="Chapter2" syncable="YES" codeGenerationType="class">
+    <entity name="Chapter" representedClassName="Chapter" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String" syncable="YES"/>
         <attribute name="wasRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="book" maxCount="1" deletionRule="Nullify" destinationEntity="BookOfTheBible" inverseName="chapters" inverseEntity="BookOfTheBible" syncable="YES"/>
-        <relationship name="verses" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Verse2" inverseName="chapter" inverseEntity="Verse2" syncable="YES"/>
+        <relationship name="verses" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Verse" inverseName="chapter" inverseEntity="Verse" syncable="YES"/>
     </entity>
-    <entity name="Verse2" representedClassName="Verse2" syncable="YES" codeGenerationType="class">
+    <entity name="Verse" representedClassName="Verse" syncable="YES" codeGenerationType="class">
         <attribute name="wasRead" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
-        <relationship name="chapter" maxCount="1" deletionRule="Nullify" destinationEntity="Chapter2" inverseName="verses" inverseEntity="Chapter2" syncable="YES"/>
+        <relationship name="chapter" maxCount="1" deletionRule="Nullify" destinationEntity="Chapter" inverseName="verses" inverseEntity="Chapter" syncable="YES"/>
     </entity>
     <elements>
-        <element name="BookOfTheBible" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Chapter2" positionX="0" positionY="0" width="0" height="0"/>
-        <element name="Verse2" positionX="0" positionY="0" width="0" height="0"/>
+        <element name="BookOfTheBible" positionX="160" positionY="192" width="128" height="90"/>
+        <element name="Chapter" positionX="-54" positionY="-9" width="128" height="105"/>
+        <element name="Verse" positionX="-63" positionY="-18" width="128" height="75"/>
     </elements>
 </model>
