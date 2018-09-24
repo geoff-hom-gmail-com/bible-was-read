@@ -18,7 +18,6 @@ class VerseCollectionViewController: UICollectionViewController {
     var bookName: String!
     // Conceptually a constant, as the value is set by the parent and never changed.
 
-//    var chapter: ChapterOld!
     var chapter: Chapter!
     // Conceptually a constant, as the value is set by the parent and never changed.
     
@@ -61,26 +60,24 @@ class VerseCollectionViewController: UICollectionViewController {
 //    }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        // temp check
-        os_log("verses: %i.", log: .default, type: .debug, chapter.verses?.count ?? 0)
         return chapter.verses?.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let verseCollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! VerseCollectionViewCell
-        
         verseCollectionViewCell.layer.borderWidth = 1
         verseCollectionViewCell.layer.cornerRadius = 4
-        
-        // Populate the cell.
-        verseCollectionViewCell.label.text = String(indexPath.row + 1)
-        // If verse was read, show that.
-        //TODO: fix
-//        let verse = self.chapter.verses[indexPath.row]
-//        verseCollectionViewCell.isSelected = verse.wasRead
-
+        let index = indexPath.row
+        if let verse = chapter.verses?[index] as? Verse {
+            verseCollectionViewCell.label.text = String(index + 1)
+            if verse.wasRead {
+                verseCollectionViewCell.isSelected = true
+                collectionView.selectItem(at: indexPath, animated: true, scrollPosition: [])
+                // selectItem(at:animated:scrollPosition:) is needed to fix a bug (upon load, previously selected cells can't be tapped) (https://stackoverflow.com/questions/15330844/uicollectionview-select-and-deselect-issue). And if isSelected is removed, then selected cells don't look selected (i.e. background color not changed) until user taps a cell.
+            }
+            // If verse was read, show that.
+        }
         return verseCollectionViewCell
     }
 
@@ -95,17 +92,29 @@ class VerseCollectionViewController: UICollectionViewController {
 
     // Uncomment this method to specify if the specified item should be selected
 //    override func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+//        os_log("Cell shouldSelectItemAt?", log: .default, type: .debug)
+//        return true
+//    }
+//
+//    override func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+//        os_log("Cell shouldDeselectItemAt?", log: .default, type: .debug)
 //        return true
 //    }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // Mark verse as read.
-        // here, we need to do something that leads to it being saved to disk
-        // but I guess this class shouldn't know anything about whether it saves; it just needs to know the right verse to set. self.chapter.verses doesn't work, as verses (and chapter) are structs and passed by value. Though if I call something that leads to a write, will it cause everything to read? that seems weird. Makes more sense to have an exit segue/etc. that tells parent to reloadData
-        //TODO: fix
-//        self.chapter.verses[indexPath.row].wasRead = true
-        os_log("Was read!: %i.", log: .default, type: .debug, indexPath.row)
+        (chapter.verses?[indexPath.row] as? Verse)?.wasRead = true
+        // TODO: here, we need to do something that leads to it being saved to disk?
 
+//        os_log("Cell selected: %i.", log: .default, type: .debug, indexPath.row + 1)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        (chapter.verses?[indexPath.row] as? Verse)?.wasRead = false
+        // TODO: here, we need to do something that leads to it being saved to disk?
+
+//        os_log("Cell deselected: %i.", log: .default, type: .debug, indexPath.row + 1)
+        // Mark verse as unread.
     }
 
     /*
