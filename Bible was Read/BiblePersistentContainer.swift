@@ -18,6 +18,7 @@ class BiblePersistentContainer: NSPersistentContainer {
     static let SavedBooksURL = DocumentsDirectory.appendingPathComponent("books")
     static let BlankBooksFilename = "ChapterAndVerseList"
     static let BlankBooksSuffix = "csv"
+    // The default data is in a human-readable .csv file. The .csv was exported from a Google spreadsheet.
     
     // MARK: - Core Data Saving support
     

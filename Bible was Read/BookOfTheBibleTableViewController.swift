@@ -16,7 +16,6 @@ class BookOfTheBibleTableViewController: UITableViewController {
     var biblePersistentContainer: BiblePersistentContainer!
     // Conceptually a constant, as the value is set by the parent and never changed.
     
-    var booksOfTheBibleOld: [BookOfTheBibleOld]!
     var booksOfTheBible: [BookOfTheBible]!
     // Initialized in viewDidLoad().
     
