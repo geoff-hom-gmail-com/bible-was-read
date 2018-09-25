@@ -72,8 +72,11 @@ class BiblePersistentContainer: NSPersistentContainer {
             }
             let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
             
-            var currentBookName = firstBookFirstChapterInfo[0]
+            var importOrder = 1
+            // To assign book ID, to preserve order.
             var currentBook = BookOfTheBible(context: viewContext)
+            currentBook.id = Int16(importOrder)
+            var currentBookName = firstBookFirstChapterInfo[0]
             currentBook.name = currentBookName
     
             var books = [BookOfTheBible]()
@@ -87,6 +90,8 @@ class BiblePersistentContainer: NSPersistentContainer {
                     
                     currentBookName = bookName
                     currentBook = BookOfTheBible(context: viewContext)
+                    importOrder += 1
+                    currentBook.id = Int16(importOrder)
                     currentBook.name = currentBookName
                 }
                 
@@ -188,6 +193,8 @@ class BiblePersistentContainer: NSPersistentContainer {
     func savedBooks() -> [BookOfTheBible] {
         /// Return saved books of the Bible. Else, return default data (a Bible with nothing read; i.e., "blank").
         let request: NSFetchRequest<BookOfTheBible> = BookOfTheBible.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
+        request.sortDescriptors = [sortDescriptor]
         do {
             let books = try viewContext.fetch(request)
             if books.isEmpty {
