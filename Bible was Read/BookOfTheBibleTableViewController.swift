@@ -13,12 +13,12 @@ import os.log
 class BookOfTheBibleTableViewController: UITableViewController {
     // MARK: Properties
     
+    var biblePersistentContainer: BiblePersistentContainer!
+    // Conceptually a constant, as the value is set by the parent and never changed.
+    
     var booksOfTheBibleOld: [BookOfTheBibleOld]!
     var booksOfTheBible: [BookOfTheBible]!
     // Initialized in viewDidLoad().
-    
-    var biblePersistentContainer: BiblePersistentContainer!
-    // Conceptually a constant, as the value is set by the parent and never changed.
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,6 +109,7 @@ class BookOfTheBibleTableViewController: UITableViewController {
             guard let chapterTableViewController = segue.destination as? ChapterTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
+            chapterTableViewController.biblePersistentContainer = biblePersistentContainer
             guard let selectedCell = sender as? UITableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }

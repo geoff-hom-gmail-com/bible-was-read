@@ -15,6 +15,9 @@ class VerseCollectionViewController: UICollectionViewController {
 
     // MARK: Properties
     
+    var biblePersistentContainer: BiblePersistentContainer!
+    // Conceptually a constant, as the value is set by the parent and never changed.
+
     var bookName: String!
     // Conceptually a constant, as the value is set by the parent and never changed.
 
@@ -102,19 +105,17 @@ class VerseCollectionViewController: UICollectionViewController {
 //    }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // Mark verse as read.
         (chapter.verses?[indexPath.row] as? Verse)?.wasRead = true
-        // TODO: here, we need to do something that leads to it being saved to disk?
-
+        // Mark verse as read.
+        biblePersistentContainer.saveContext()
 //        os_log("Cell selected: %i.", log: .default, type: .debug, indexPath.row + 1)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         (chapter.verses?[indexPath.row] as? Verse)?.wasRead = false
-        // TODO: here, we need to do something that leads to it being saved to disk?
-
-//        os_log("Cell deselected: %i.", log: .default, type: .debug, indexPath.row + 1)
         // Mark verse as unread.
+        biblePersistentContainer.saveContext()
+//        os_log("Cell deselected: %i.", log: .default, type: .debug, indexPath.row + 1)
     }
 
     /*

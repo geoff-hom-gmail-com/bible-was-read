@@ -11,6 +11,9 @@ import UIKit
 class ChapterTableViewController: UITableViewController {
     // MARK: Properties
     
+    var biblePersistentContainer: BiblePersistentContainer!
+    // Conceptually a constant, as the value is set by the parent and never changed.
+
 //    var bookOfTheBible: BookOfTheBibleOld!
     var bookOfTheBible: BookOfTheBible!
     // Conceptually a constant, as the value is set by the parent and never changed.
@@ -97,10 +100,9 @@ class ChapterTableViewController: UITableViewController {
             guard let verseCollectionViewController = segue.destination as? VerseCollectionViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
-            
+            verseCollectionViewController.biblePersistentContainer = biblePersistentContainer
             verseCollectionViewController.bookName = bookOfTheBible.name
             // Set selected book's name.
-            
             guard let selectedCell = sender as? UITableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
             }
