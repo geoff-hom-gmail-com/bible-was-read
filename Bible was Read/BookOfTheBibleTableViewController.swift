@@ -30,11 +30,10 @@ class BookOfTheBibleTableViewController: UITableViewController {
 //         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         // Get table data.
-//        booksOfTheBibleOld = BookOfTheBibleManagerOld.savedBooks()
-        // make this a subclass of PC? Unless I can do it with what PC has (load data, load default data, create default data if not there)
-        // ok, how do I load data in CD?
-        // should this be savedBooks() or more like loadBooks()?
+        os_log("Pre savedBooks call.", log: .default, type: .debug)
         booksOfTheBible = biblePersistentContainer.savedBooks()
+        os_log("Post savedBooks call.", log: .default, type: .debug)
+        // testing timing/performance
     }
 
     override func didReceiveMemoryWarning() {

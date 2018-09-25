@@ -21,10 +21,11 @@ class BiblePersistentContainer: NSPersistentContainer {
     
     // MARK: - Core Data Saving support
     
-    func saveContext () {
+    func saveContext() {
         if viewContext.hasChanges {
             do {
                 try viewContext.save()
+                os_log("Saved!", log: .default, type: .debug)
             } catch {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -103,7 +104,7 @@ class BiblePersistentContainer: NSPersistentContainer {
             
             // Add last book.
             books.append(currentBook)
-            
+            saveContext()
             return books
         }
         catch {
@@ -193,6 +194,7 @@ class BiblePersistentContainer: NSPersistentContainer {
                 os_log("No books of the Bible were found. Loading default data.", log: .default, type: .default)
                 return blankBooks()
             } else {
+                os_log("Books of the Bible were found! Loading.", log: .default, type: .default)
                 return books
             }
         } catch {
