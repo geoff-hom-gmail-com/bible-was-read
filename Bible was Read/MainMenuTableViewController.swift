@@ -12,9 +12,12 @@ import os.log
 
 class MainMenuTableViewController: UITableViewController {
     // MARK: Properties
+    
+    var biblePersistentContainer: BiblePersistentContainer?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
 
-    // Conceptually a constant, as the value is set by the parent and never changed.
-    var biblePersistentContainer: BiblePersistentContainer!
+    let showBooksSegueIdentifier = "ShowBooksOfTheBible"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,15 +87,38 @@ class MainMenuTableViewController: UITableViewController {
     */
 
     // MARK: - Navigation
+    
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        super.shouldPerformSegue(withIdentifier: identifier, sender: sender)
+        switch identifier {
+        case showBooksSegueIdentifier:
+            if (biblePersistentContainer == nil) {
+                os_log("Error: Won't perform segue: Persistent container is nil.", log: .default, type: .error)
+                let alert = UIAlertController(title: "Persistent Container is Nil",
+                                              message: "App initialization may have failed.",
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                present(alert, animated: true)
+                // Hopefully the user can fix it herself. Else, she can ask for help or report it.
+                return false
+            } else {
+                return true
+            }
+            // If persistent container is nil, then don't perform segue.
+        default:
+            return true
+        }
+    }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
         switch(segue.identifier ?? "") {
-        case "ShowBooksOfTheBible":
+        case showBooksSegueIdentifier:
             guard let bookOfTheBibleTableViewController = segue.destination as? BookOfTheBibleTableViewController else {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             bookOfTheBibleTableViewController.biblePersistentContainer = biblePersistentContainer
+        // TODO: because of shouldPerformSegue, we know this isn't optional. But bookOfTheBibleTableViewController still has to take an optional, because we don't set it until after init. So...
         default:
             ()
         }

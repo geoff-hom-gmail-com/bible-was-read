@@ -13,10 +13,14 @@ import os.log
 class BookOfTheBibleTableViewController: UITableViewController {
     // MARK: Properties
     
-    var biblePersistentContainer: BiblePersistentContainer!
-    // Conceptually a constant, as the value is set by the parent and never changed.
-    
-    var booksOfTheBible: [BookOfTheBible]!
+    // TODO: I really don't like these IUOs. I use them to mean something should never be optional, but sometimes I'm accidentally passing an optional (like BPC?) so it's not catching it. It messes up (makes error-prone) the use of regular optionals
+//    var biblePersistentContainer: BiblePersistentContainer!
+    var biblePersistentContainer: BiblePersistentContainer?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
+
+//    var booksOfTheBible: [BookOfTheBible]!
+    var booksOfTheBible: [BookOfTheBible]?
     // Initialized in viewDidLoad().
     
     override func viewDidLoad() {
@@ -30,7 +34,9 @@ class BookOfTheBibleTableViewController: UITableViewController {
         
         // Get table data.
         os_log("Pre savedBooks call.", log: .default, type: .debug)
-        booksOfTheBible = biblePersistentContainer.savedBooks()
+//        booksOfTheBible = biblePersistentContainer.savedBooks()
+        booksOfTheBible = biblePersistentContainer!.savedBooks()
+// temp as I want to run and test something
         os_log("Post savedBooks call.", log: .default, type: .debug)
         // testing timing/performance
     }
@@ -47,20 +53,18 @@ class BookOfTheBibleTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return booksOfTheBibleOld.count
-        return booksOfTheBible.count
+        return booksOfTheBible?.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        // Table-view cells are reused and should be dequeued.
         let cell = tableView.dequeueReusableCell(withIdentifier: "BookTableViewCell", for: indexPath)
-        
-        // Populate the cell.
-//        let book = booksOfTheBibleOld[indexPath.row]
-        let book = booksOfTheBible[indexPath.row]
+        // Table-view cells are reused and should be dequeued.
+
+        guard let book = booksOfTheBible?[indexPath.row] else {
+            return cell
+        }
         cell.textLabel?.text = book.name
-        
         return cell
     }
 
@@ -115,7 +119,7 @@ class BookOfTheBibleTableViewController: UITableViewController {
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-            let selectedBookOfTheBible = booksOfTheBible[indexPath.row]
+            let selectedBookOfTheBible = booksOfTheBible?[indexPath.row]
             chapterTableViewController.bookOfTheBible = selectedBookOfTheBible
             // Set selected book.
         default:

@@ -16,9 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        /// Override point for customization after application launch.
         
-        // Apple recommends, "pass a reference to the (persistent) container to your user interface." (https://developer.apple.com/documentation/coredata/making_core_data_your_model_layer)
         guard let navigationController = window?.rootViewController as? UINavigationController else {
             return true
         }
@@ -26,12 +25,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return true
         }
         mainMenuTableViewController.biblePersistentContainer = biblePersistentContainer
-        
+        // Apple recommends, "… pass a reference to the (persistent) container to your user interface." (https://developer.apple.com/documentation/coredata/making_core_data_your_model_layer)
+    
         return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+        /// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
@@ -52,24 +52,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        self.biblePersistentContainer.saveContext()
+        biblePersistentContainer?.saveContext()
     }
 
     // MARK: - Core Data stack
     
-    lazy var biblePersistentContainer: BiblePersistentContainer = {
+    lazy var biblePersistentContainer: BiblePersistentContainer? = {
         /*
          The persistent container for the application. This implementation
          creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
+         application to it.
+         
+         This is an optional so, even without a store, the user can access other app
+         we can preserve other app functions, especially feedback/help.
          */
         let container = BiblePersistentContainer(name: "Bible-was-Read")
+        var wasError = false
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                
+//            if let error = error as NSError? {
+            if true {
                 /*
                  Typical reasons for an error here include:
                  * The parent directory does not exist, cannot be created, or disallows writing.
@@ -78,9 +79,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
                  */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+//                os_log("Error: Can't load persistent store: %@.", log: .default, type: .error, error.localizedDescription)
+                wasError = true
             }
         })
+        if wasError {
+            // The persistent stores didn't load, so we should alert the user. However, the UI doesn't seem accessible yet (in testing). But because we return nil for biblePersistentContainer, a later alert should appear and give a reasonable alert. (Currently that's TODO
+            // Ok, this section is because there was fatalError in the code, and I wanted something more graceful. So not crashing. Right now, it's returning nil. But we could also keep the BPC and just have no PSes loaded. But as long as the user can access help/feedback and is aware there's an issue (like downhill alerts), that's okay.
+    
+            
+            // Hmm, we can't show an alert here as the UI isn't up yet. But in this exact case, if the bpc is nil, then it passes nil to the mmtv. Then if the user tries to do the segue, that alert shows up. 
+            // TODO: Show an alert to the user. Hopefully she can fix it. If not, can ask for help.
+            return nil
+        }
         return container
     }()
 }

@@ -11,15 +11,6 @@ import CoreData
 import os.log
 
 class BiblePersistentContainer: NSPersistentContainer {
-    // MARK: File Paths
-    
-    //these don't need to be static, or at least we'd call them only from here; figure this out
-    static let DocumentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    static let SavedBooksURL = DocumentsDirectory.appendingPathComponent("books")
-    static let BlankBooksFilename = "ChapterAndVerseList"
-    static let BlankBooksSuffix = "csv"
-    // The default data is in a human-readable .csv file. The .csv was exported from a Google spreadsheet.
-    
     // MARK: - Core Data Saving support
     
     func saveContext() {
@@ -36,23 +27,29 @@ class BiblePersistentContainer: NSPersistentContainer {
         }
     }
     
-    // MARK: - ??
+    // MARK: - Loading data
     
-    //TODO: Once we're reading from a proper JSON file, go thru this function and lint it manually.
-    func blankBooks() -> [BookOfTheBible] {
+//     (a Bible with nothing read; i.e., "blank").
+    //TODO: Go thru this function and clean it up manually.
+    func defaultBooks() -> [BookOfTheBible]? {
         /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
-        // Blank Bible data is in a text file. Read it and parse.
-        guard let blankBooksURL = Bundle.main.url(forResource: BiblePersistentContainer.BlankBooksFilename, withExtension: BiblePersistentContainer.BlankBooksSuffix) else {
-            
-            os_log("Can't find file with blank books: %@.", log: .default, type: .error, BiblePersistentContainer.BlankBooksFilename + BiblePersistentContainer.BlankBooksSuffix)
-            
-            let genericBook = BookOfTheBible(context: viewContext)
-            genericBook.name = "Can't Find Blank Books"
-
-            return [genericBook]
+        
+        let defaultDataFilename = "ChapterAndVerseList"
+        let defaultDataSuffix = "csv"
+        // The default data is in a human-readable .csv file. The .csv was exported from a Google spreadsheet.
+        
+        guard let defaultDataURL = Bundle.main.url(forResource: defaultDataFilename, withExtension: defaultDataSuffix) else {
+            os_log("Can't find default data: %@ not found.", log: .default, type: .error, defaultDataFilename + defaultDataSuffix)
+//            let genericBook = BookOfTheBible(context: viewContext)
+//            genericBook.name = "Can't find default data"
+            return nil
         }
+        // If the default data isn't found, then return
+
+        // Blank Bible data is in a text file. Read it and parse.
+
         do {
-            let csvText = try String(contentsOf: blankBooksURL, encoding: .utf8)
+            let csvText = try String(contentsOf: defaultDataURL, encoding: .utf8)
             //            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
             
             // Clean up newlines.
@@ -191,41 +188,24 @@ class BiblePersistentContainer: NSPersistentContainer {
 //        }
 //    }
     
-    func savedBooks() -> [BookOfTheBible] {
-        /// Return saved books of the Bible. Else, return default data (a Bible with nothing read; i.e., "blank").
+    func savedBooks() -> [BookOfTheBible]? {
+        /// Return saved books of the Bible. Else, return default data.
         let request: NSFetchRequest<BookOfTheBible> = BookOfTheBible.fetchRequest()
         let sortDescriptor = NSSortDescriptor(key: "id", ascending: true)
         request.sortDescriptors = [sortDescriptor]
         do {
             let books = try viewContext.fetch(request)
             if books.isEmpty {
-                os_log("No books of the Bible were found. Loading default data.", log: .default, type: .default)
-                return blankBooks()
+                os_log("No saved books were found. Loading default data.", log: .default, type: .default)
+                return defaultBooks()
             } else {
                 os_log("Books of the Bible were found! Loading.", log: .default, type: .default)
                 return books
             }
         } catch {
-            os_log("Unable to load saved books of the Bible: %@. Loading default data.", log: .default, type: .default, String(describing: error))
-            return blankBooks()
+            os_log("Unable to load saved books: %@. Loading default data.", log: .default, type: .default, String(describing: error))
+            return defaultBooks()
         }
         // When fetching the data, it can fail two ways: Fetch throws an error, or fetch returns an empty array. In both cases, we want to return default data.
     }
-
-    // Return saved books of the Bible. If none, return default (blank) data.
-//    static func savedBooks() -> [BookOfTheBible]? {
-//        //        return BookOfTheBibleManager.blankBooks(persistentContainer: persistentContainer)
-//
-//        // Swift 4 Codable.
-//        let url = BookOfTheBibleManager.SavedBooksURL
-//        let decoder = JSONDecoder()
-//        do {
-//            let data = try Data(contentsOf: url)
-//            let books = try decoder.decode([BookOfTheBible].self, from: data)
-//            return books
-//        } catch {
-//            os_log("Unable to load symptoms: %@. Loading blank data.", log: OSLog.default, type: .debug, String(describing: error))
-//            return BookOfTheBibleManager.blankBooks()
-//        }
-//    }
 }
