@@ -15,29 +15,28 @@ class VerseCollectionViewController: UICollectionViewController {
 
     // MARK: Properties
     
-    var biblePersistentContainer: BiblePersistentContainer!
-    // Conceptually a constant, as the value is set by the parent and never changed.
+    var biblePersistentContainer: BiblePersistentContainer?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
 
-    var bookName: String!
-    // Conceptually a constant, as the value is set by the parent and never changed.
+    var bookName: String?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
 
-    var chapter: Chapter!
-    // Conceptually a constant, as the value is set by the parent and never changed.
-    
+    var chapter: Chapter?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
-        // Register cell classes (or storyboard can register a nib file)
 //        self.collectionView!.register(UICollectionViewCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-
-        // Do any additional setup after loading the view.
+        // Register cell classes (or storyboard can register a nib file)
         
-        navigationItem.title = "\(bookName ?? "") \(chapter.name ?? "")"
-        // 6.27.18: IUO isn't implicitly unwrapped, so using ??.
-        
+        navigationItem.title = "\(bookName ?? "") \(chapter?.name ?? "")"
         self.collectionView?.allowsMultipleSelection = true
     }
 
@@ -63,7 +62,7 @@ class VerseCollectionViewController: UICollectionViewController {
 //    }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return chapter.verses?.count ?? 0
+        return chapter?.verses?.count ?? 0
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -72,7 +71,7 @@ class VerseCollectionViewController: UICollectionViewController {
         verseCollectionViewCell.layer.borderWidth = 1
         verseCollectionViewCell.layer.cornerRadius = 4
         let index = indexPath.row
-        if let verse = chapter.verses?[index] as? Verse {
+        if let verse = chapter?.verses?[index] as? Verse {
             verseCollectionViewCell.label.text = String(index + 1)
             if verse.wasRead {
                 verseCollectionViewCell.isSelected = true
@@ -81,6 +80,7 @@ class VerseCollectionViewController: UICollectionViewController {
             }
             // If verse was read, show that.
         }
+        //TODO: use guard instead of nested if?
         return verseCollectionViewCell
     }
 
@@ -105,16 +105,18 @@ class VerseCollectionViewController: UICollectionViewController {
 //    }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        (chapter.verses?[indexPath.row] as? Verse)?.wasRead = true
+        (chapter?.verses?[indexPath.row] as? Verse)?.wasRead = true
         // Mark verse as read.
-        biblePersistentContainer.saveContext()
+        //TODO: clean up; try let verse = ...
+        biblePersistentContainer?.saveContext()
 //        os_log("Cell selected: %i.", log: .default, type: .debug, indexPath.row + 1)
     }
     
     override func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        (chapter.verses?[indexPath.row] as? Verse)?.wasRead = false
+        (chapter?.verses?[indexPath.row] as? Verse)?.wasRead = false
         // Mark verse as unread.
-        biblePersistentContainer.saveContext()
+        //TODO: clean up; try let verse = ... Also we're duping didSelectItemAt...
+        biblePersistentContainer?.saveContext()
 //        os_log("Cell deselected: %i.", log: .default, type: .debug, indexPath.row + 1)
     }
 

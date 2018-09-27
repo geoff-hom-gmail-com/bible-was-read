@@ -69,8 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let container = BiblePersistentContainer(name: "Bible-was-Read")
         var wasError = false
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-//            if let error = error as NSError? {
-            if true {
+            if let error = error as NSError? {
                 /*
                  Typical reasons for an error here include:
                  * The parent directory does not exist, cannot be created, or disallows writing.
@@ -79,17 +78,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                  * The store could not be migrated to the current model version.
                  Check the error message to determine what the actual problem was.
                  */
-//                os_log("Error: Can't load persistent store: %@.", log: .default, type: .error, error.localizedDescription)
+                os_log("Error: Can't load persistent store: %@.", log: .default, type: .error, error.localizedDescription)
                 wasError = true
             }
         })
         if wasError {
-            // The persistent stores didn't load, so we should alert the user. However, the UI doesn't seem accessible yet (in testing). But because we return nil for biblePersistentContainer, a later alert should appear and give a reasonable alert. (Currently that's TODO
-            // Ok, this section is because there was fatalError in the code, and I wanted something more graceful. So not crashing. Right now, it's returning nil. But we could also keep the BPC and just have no PSes loaded. But as long as the user can access help/feedback and is aware there's an issue (like downhill alerts), that's okay.
-    
-            
-            // Hmm, we can't show an alert here as the UI isn't up yet. But in this exact case, if the bpc is nil, then it passes nil to the mmtv. Then if the user tries to do the segue, that alert shows up. 
-            // TODO: Show an alert to the user. Hopefully she can fix it. If not, can ask for help.
+            // The persistent stores didn't load, so we should alert the user. However, the UI doesn't seem accessible yet (in testing). But because we return nil for biblePersistentContainer, a later alert should appear and give a reasonable alert. (Currently that happens when the user tries to see books of the Bible, triggering MainMenuTableViewController.shouldPerformSegue(withIdentifier:sender:) with showBooksSegueIdentifier.)
             return nil
         }
         return container

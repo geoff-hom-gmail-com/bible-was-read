@@ -13,13 +13,10 @@ import os.log
 class BookOfTheBibleTableViewController: UITableViewController {
     // MARK: Properties
     
-    // TODO: I really don't like these IUOs. I use them to mean something should never be optional, but sometimes I'm accidentally passing an optional (like BPC?) so it's not catching it. It messes up (makes error-prone) the use of regular optionals
-//    var biblePersistentContainer: BiblePersistentContainer!
     var biblePersistentContainer: BiblePersistentContainer?
     // Basically a constant, as the value is set by the parent and never changed.
     // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
 
-//    var booksOfTheBible: [BookOfTheBible]!
     var booksOfTheBible: [BookOfTheBible]?
     // Initialized in viewDidLoad().
     
@@ -35,7 +32,8 @@ class BookOfTheBibleTableViewController: UITableViewController {
         // Get table data.
         os_log("Pre savedBooks call.", log: .default, type: .debug)
 //        booksOfTheBible = biblePersistentContainer.savedBooks()
-        booksOfTheBible = biblePersistentContainer!.savedBooks()
+//        booksOfTheBible = biblePersistentContainer!.savedBooks()
+        booksOfTheBible = biblePersistentContainer?.savedBooks()
 // temp as I want to run and test something
         os_log("Post savedBooks call.", log: .default, type: .debug)
         // testing timing/performance

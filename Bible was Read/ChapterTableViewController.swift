@@ -11,16 +11,17 @@ import UIKit
 class ChapterTableViewController: UITableViewController {
     // MARK: Properties
     
-    var biblePersistentContainer: BiblePersistentContainer!
-    // Conceptually a constant, as the value is set by the parent and never changed.
+    var biblePersistentContainer: BiblePersistentContainer?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
 
-//    var bookOfTheBible: BookOfTheBibleOld!
-    var bookOfTheBible: BookOfTheBible!
-    // Conceptually a constant, as the value is set by the parent and never changed.
+    var bookOfTheBible: BookOfTheBible?
+    // Basically a constant, as the value is set by the parent and never changed.
+    // Tried this as an IUO, but really didn't like it. (Type-checking was confusing.)
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = bookOfTheBible.name
+        navigationItem.title = bookOfTheBible?.name
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -41,7 +42,8 @@ class ChapterTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return bookOfTheBible.chapters?.count ?? 0
+//        return bookOfTheBible.chapters?.count ?? 0
+        return bookOfTheBible?.chapters?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -101,7 +103,7 @@ class ChapterTableViewController: UITableViewController {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             verseCollectionViewController.biblePersistentContainer = biblePersistentContainer
-            verseCollectionViewController.bookName = bookOfTheBible.name
+            verseCollectionViewController.bookName = bookOfTheBible?.name
             // Set selected book's name.
             guard let selectedCell = sender as? UITableViewCell else {
                 fatalError("Unexpected sender: \(String(describing: sender))")
@@ -109,7 +111,7 @@ class ChapterTableViewController: UITableViewController {
             guard let indexPath = tableView.indexPath(for: selectedCell) else {
                 fatalError("The selected cell is not being displayed by the table")
             }
-            guard let selectedChapter = bookOfTheBible.chapters?[indexPath.row] as? Chapter else {
+            guard let selectedChapter = bookOfTheBible?.chapters?[indexPath.row] as? Chapter else {
                 fatalError("Could not get selected chapter.")
             }
             verseCollectionViewController.chapter = selectedChapter
