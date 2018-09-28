@@ -44,7 +44,7 @@ class BiblePersistentContainer: NSPersistentContainer {
         
         let defaultDataFilename = "ChapterAndVerseList"
         let defaultDataSuffix = "csv"
-        // The default data is in a human-readable .csv file. The .csv was exported from a Google spreadsheet.
+        // The default data is in a human-readable .csv file. The file has a header. Then, each line describes one chapter: book name, chapter, and number of verses. (The .csv was exported from a Google spreadsheet.)
         
         guard let defaultDataURL = Bundle.main.url(forResource: defaultDataFilename, withExtension: defaultDataSuffix) else {
             os_log("Default-data file not found (%@).", log: .default, type: .error, "\(defaultDataFilename).\(defaultDataSuffix)")
@@ -64,12 +64,11 @@ class BiblePersistentContainer: NSPersistentContainer {
             let cleanedCSVText = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
             // Clean up newlines.
 
-            var lines = cleanedCSVText.components(separatedBy: CharacterSet.newlines)
-            
-            lines.removeFirst()
-            // Assume a header of Book, Chapter, Verse. Remove it.
+            let lines = cleanedCSVText.components(separatedBy: CharacterSet.newlines)
+            let chapterLines = lines.dropFirst()
+            // Remove header.
 
-            guard !lines.isEmpty else {
+            guard !chapterLines.isEmpty else {
                 os_log("Default data had only one line (presumably the header).", log: .default, type: .error)
                 let alert = UIAlertController(title: "Can't Find Default Data",
                                               // "Can't Find X" seems good diction, as the user knows the app needs something.
@@ -83,21 +82,21 @@ class BiblePersistentContainer: NSPersistentContainer {
         
             var books = [BookOfTheBible]()
             // For storing the default data.
-            var importOrder = 0
-            // Assign to book ID, to preserve listing order.
             
-            for line in lines {
-                let chapterInfo = line.components(separatedBy: ",")
+            for chapterLine in chapterLines {
+                let chapterInfo = chapterLine.components(separatedBy: ",")
+                
                 let previousBookName = books.last?.name
                 let bookName = chapterInfo[0]
                 if bookName != previousBookName {
                     let book = BookOfTheBible(context: viewContext)
-                    importOrder += 1
-                    book.id = Int16(importOrder)
+                    let previousID = books.last?.id
+                    book.id = Int16((previousID ?? 0) + 1)
+                    // Increment ID to preserve the order of the books.
                     book.name = bookName
                     books.append(book)
                 }
-                // If the book name is new, then make the book.
+                // If the book name is new, then make that book.
                 
                 let chapter = Chapter(context: viewContext)
                 chapter.name = chapterInfo[1]
@@ -117,15 +116,16 @@ class BiblePersistentContainer: NSPersistentContainer {
             return books
         }
         catch {
-            //TODO: clean up this catch statement; and test it
-            os_log("Default-data file exists, but can't read it: %@.", log: .default, type: .debug, String(describing: error))
-            
-            let genericBook = BookOfTheBible(context: viewContext)
-            genericBook.name = "Can't Read Blank Books"
-            //TODO: Don't make a fake book like this. Show an alert.
-
-            return [genericBook]
+            os_log("Default-data file exists, but can't read it: %@.", log: .default, type: .error, String(describing: error))
+            let alert = UIAlertController(title: "Can't Read Default Data",
+                                          // "Can't X" seems good diction, as the user knows the app needs something.
+                message: "Found default data but can't read it: \(String(describing: error)).",
+                preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            delegate?.biblePersistentContainer(self, didMakeAlert: alert)
+            return nil
         }
+        // If the default-data file couldn't be read, then alert the user.
     }
 
     func savedBooks() -> [BookOfTheBible]? {
