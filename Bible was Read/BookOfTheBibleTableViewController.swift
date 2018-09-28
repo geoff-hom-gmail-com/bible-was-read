@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import os.log
 
-class BookOfTheBibleTableViewController: UITableViewController {
+class BookOfTheBibleTableViewController: UITableViewController, BiblePersistentContainerDelegate {
     // MARK: Properties
     
     var biblePersistentContainer: BiblePersistentContainer?
@@ -30,9 +30,8 @@ class BookOfTheBibleTableViewController: UITableViewController {
 //         self.navigationItem.rightBarButtonItem = self.editButtonItem
         
         // Get table data.
+        biblePersistentContainer?.delegate = self
         os_log("Pre savedBooks call.", log: .default, type: .debug)
-//        booksOfTheBible = biblePersistentContainer.savedBooks()
-//        booksOfTheBible = biblePersistentContainer!.savedBooks()
         booksOfTheBible = biblePersistentContainer?.savedBooks()
 // temp as I want to run and test something
         os_log("Post savedBooks call.", log: .default, type: .debug)
@@ -125,4 +124,9 @@ class BookOfTheBibleTableViewController: UITableViewController {
         }
     }
 
+    // MARK: - BiblePersistentContainerDelegate
+
+    func biblePersistentContainer(_ container: BiblePersistentContainer, didMakeAlert alert: UIAlertController) {
+        present(alert, animated: true)
+    }
 }

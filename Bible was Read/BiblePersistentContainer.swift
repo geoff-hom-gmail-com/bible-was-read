@@ -10,14 +10,24 @@ import UIKit
 import CoreData
 import os.log
 
+protocol BiblePersistentContainerDelegate: AnyObject {
+    func biblePersistentContainer(_ container: BiblePersistentContainer, didMakeAlert alert: UIAlertController)
+    // The container made an alert, as it knows what happened and why. The container isn't part of the UI, so showing the alert is up to the delegate.
+    // An alert is made if the default data file isn't found, can't be read, or has only a header (i.e., is only one line).
+}
+
 class BiblePersistentContainer: NSPersistentContainer {
+    // MARK: - Properties
+    
+    weak var delegate: BiblePersistentContainerDelegate?
+    
     // MARK: - Core Data Saving support
     
     func saveContext() {
         if viewContext.hasChanges {
             do {
                 try viewContext.save()
-                os_log("Saved!", log: .default, type: .debug)
+                os_log("Context saved.", log: .default, type: .debug)
             } catch {
                 // Replace this implementation with code to handle the error appropriately.
                 // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
@@ -29,165 +39,95 @@ class BiblePersistentContainer: NSPersistentContainer {
     
     // MARK: - Loading data
     
-//     (a Bible with nothing read; i.e., "blank").
-    //TODO: Go thru this function and clean it up manually.
     func defaultBooks() -> [BookOfTheBible]? {
-        /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
+        /// Returns a Bible with nothing read.
         
         let defaultDataFilename = "ChapterAndVerseList"
         let defaultDataSuffix = "csv"
         // The default data is in a human-readable .csv file. The .csv was exported from a Google spreadsheet.
         
         guard let defaultDataURL = Bundle.main.url(forResource: defaultDataFilename, withExtension: defaultDataSuffix) else {
-            os_log("Can't find default data: %@ not found.", log: .default, type: .error, defaultDataFilename + defaultDataSuffix)
-//            let genericBook = BookOfTheBible(context: viewContext)
-//            genericBook.name = "Can't find default data"
+            os_log("Default-data file not found (%@).", log: .default, type: .error, "\(defaultDataFilename).\(defaultDataSuffix)")
+            let alert = UIAlertController(title: "Can't Find Default Data",
+                                          // "Can't Find X" seems good diction, as the user knows the app needs something.
+                                          message: "Not found: \(defaultDataFilename).\(defaultDataSuffix).",
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            delegate?.biblePersistentContainer(self, didMakeAlert: alert)
             return nil
         }
-        // If the default data isn't found, then return
-
-        // Blank Bible data is in a text file. Read it and parse.
+        // If the default-data file wasn't found, then alert the user.
 
         do {
             let csvText = try String(contentsOf: defaultDataURL, encoding: .utf8)
-            //            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
             
-            // Clean up newlines.
             let cleanedCSVText = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
-            
+            // Clean up newlines.
+
             var lines = cleanedCSVText.components(separatedBy: CharacterSet.newlines)
             
+            lines.removeFirst()
             // Assume a header of Book, Chapter, Verse. Remove it.
-            let header = lines.removeFirst()
-            os_log("Header: %@.", log: .default, type: .debug, header)
-            
-            // Initialize first book.
-            guard let firstLine = lines.first else {
-                os_log("File has only one line, which should be the header.", log: .default, type: .debug)
-                let genericBook = BookOfTheBible(context: viewContext)
-                genericBook.name = "File has only header"
-                return [genericBook]
+
+            guard !lines.isEmpty else {
+                os_log("Default data had only one line (presumably the header).", log: .default, type: .error)
+                let alert = UIAlertController(title: "Can't Find Default Data",
+                                              // "Can't Find X" seems good diction, as the user knows the app needs something.
+                    message: "\(defaultDataFilename).\(defaultDataSuffix) has only one line (presumably the header).",
+                    preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default))
+                delegate?.biblePersistentContainer(self, didMakeAlert: alert)
+                return nil
             }
-            let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
-            
-            var importOrder = 1
-            // To assign book ID, to preserve order.
-            var currentBook = BookOfTheBible(context: viewContext)
-            currentBook.id = Int16(importOrder)
-            var currentBookName = firstBookFirstChapterInfo[0]
-            currentBook.name = currentBookName
-    
+            // If the default-data file had only one line (a removed "header"), then alert the user.
+        
             var books = [BookOfTheBible]()
+            // For storing the default data.
+            var importOrder = 0
+            // Assign to book ID, to preserve listing order.
+            
             for line in lines {
                 let chapterInfo = line.components(separatedBy: ",")
-                
-                // If new book name, add old book and make new book.
+                let previousBookName = books.last?.name
                 let bookName = chapterInfo[0]
-                if bookName != currentBookName {
-                    books.append(currentBook)
-                    
-                    currentBookName = bookName
-                    currentBook = BookOfTheBible(context: viewContext)
+                if bookName != previousBookName {
+                    let book = BookOfTheBible(context: viewContext)
                     importOrder += 1
-                    currentBook.id = Int16(importOrder)
-                    currentBook.name = currentBookName
+                    book.id = Int16(importOrder)
+                    book.name = bookName
+                    books.append(book)
                 }
+                // If the book name is new, then make the book.
                 
-                // Add chapter to book.
-                let chapterName = chapterInfo[1]
                 let chapter = Chapter(context: viewContext)
-                chapter.name = chapterName
+                chapter.name = chapterInfo[1]
                 if let numVerses = Int(chapterInfo[2]) {
                     for _ in 1...numVerses {
                         chapter.addToVerses(Verse(context: viewContext))
                     }
                 }
-                currentBook.addToChapters(chapter)
+                books.last?.addToChapters(chapter)
+                // Make the chapter. Add it to the most recent book.
             }
-            
-            // Add last book.
-            books.append(currentBook)
+            // Read default data and parse.
+
             saveContext()
+            // Save default data to disk.
+            
             return books
         }
         catch {
-            os_log("Blank-books file exists, but can't read it: %@.", log: .default, type: .debug, String(describing: error))
+            //TODO: clean up this catch statement; and test it
+            os_log("Default-data file exists, but can't read it: %@.", log: .default, type: .debug, String(describing: error))
             
             let genericBook = BookOfTheBible(context: viewContext)
             genericBook.name = "Can't Read Blank Books"
-            
+            //TODO: Don't make a fake book like this. Show an alert.
+
             return [genericBook]
         }
-
     }
-    
-    /// Returns a Bible with nothing read; if error, the "Bible" has only a dummy book.
-//    static func blankBooks() -> [BookOfTheBible] {
-//
-//
-//        // Blank Bible data is in a text file. Read it and parse.
-//        guard let blankBooksURL = Bundle.main.url(forResource: BlankBooksFilename, withExtension: BlankBooksSuffix) else {
-//
-//            os_log("Can't find file with blank books: %@.", log: OSLog.default, type: .debug, BlankBooksFilename + BlankBooksSuffix)
-//            return [BookOfTheBible(name: "Can't Find Blank Books")]
-//        }
-//        do {
-//            let csvText = try String(contentsOf: blankBooksURL, encoding: .utf8)
-//            //            os_log("Blank books: %@.", log: OSLog.default, type: .debug, csvText)
-//
-//            // Clean up newlines.
-//            let cleanedCSVText = csvText.replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n\n", with: "\n")
-//
-//            var lines = cleanedCSVText.components(separatedBy: CharacterSet.newlines)
-//
-//            // Assume a header of Book, Chapter, Verse. Remove it.
-//            let header = lines.removeFirst()
-//            os_log("Header: %@.", log: OSLog.default, type: .debug, header)
-//
-//            // Initialize first book.
-//            guard let firstLine = lines.first else {
-//                os_log("File has only one line, which should be the header.", log: OSLog.default, type: .debug)
-//                return [BookOfTheBible(name: "File has only header")]
-//            }
-//            let firstBookFirstChapterInfo = firstLine.components(separatedBy: ",")
-//
-//            var currentBookName = firstBookFirstChapterInfo[0]
-//            var currentBook = BookOfTheBible(name: currentBookName)
-//            var books = [BookOfTheBible]()
-//            for line in lines {
-//                let chapterInfo = line.components(separatedBy: ",")
-//
-//                // If new book name, add old book and make new book.
-//                let bookName = chapterInfo[0]
-//                if bookName != currentBookName {
-//                    books.append(currentBook)
-//
-//                    currentBookName = bookName
-//                    currentBook = BookOfTheBible(name: currentBookName)
-//                }
-//
-//                // Add chapter to book.
-//                let chapterName = chapterInfo[1]
-//                var chapter = Chapter(name: chapterName)
-//                if let numVerses = Int(chapterInfo[2]) {
-//                    for _ in 1...numVerses {
-//                        chapter.verses.append(Verse())
-//                    }
-//                }
-//                currentBook.chapters.append(chapter)
-//            }
-//
-//            // Add last book.
-//            books.append(currentBook)
-//
-//            return books
-//        }
-//        catch {
-//            os_log("Blank-books file exists, but can't read it: %@.", log: OSLog.default, type: .debug, String(describing: error))
-//            return [BookOfTheBible(name: "Can't Read Blank Books")]
-//        }
-//    }
-    
+
     func savedBooks() -> [BookOfTheBible]? {
         /// Return saved books of the Bible. Else, return default data.
         let request: NSFetchRequest<BookOfTheBible> = BookOfTheBible.fetchRequest()

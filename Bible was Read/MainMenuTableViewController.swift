@@ -118,7 +118,6 @@ class MainMenuTableViewController: UITableViewController {
                 fatalError("Unexpected destination: \(segue.destination)")
             }
             bookOfTheBibleTableViewController.biblePersistentContainer = biblePersistentContainer
-        // TODO: because of shouldPerformSegue, we know this isn't optional. But bookOfTheBibleTableViewController still has to take an optional, because we don't set it until after init. So...
         default:
             ()
         }
