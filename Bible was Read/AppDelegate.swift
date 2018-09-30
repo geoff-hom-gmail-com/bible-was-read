@@ -13,8 +13,10 @@ import os.log
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    let appName = "Bible-was-Read"
-
+    let doMakeDefaultData = false
+//    let doMakeDefaultData = true
+    // Toggle to make default-data store. See BiblePersistentContainer.makeDefaultData() for workflow.
+    
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -29,12 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         mainMenuTableViewController.biblePersistentContainer = biblePersistentContainer
         // Apple recommends, "… pass a reference to the (persistent) container to your user interface." (https://developer.apple.com/documentation/coredata/making_core_data_your_model_layer)
     
-        //TODO: temp; used to get simulator directory for our application (application's sandbox). sqlite
-        // Maybe put an ifdef compiler flag if I need to create the default data store
-        // can make a Constants struct/file and access global constants there. Like, if (devMakeDefaultDataStore)
-        print(NSPersistentContainer.defaultDirectoryURL())
-        //TODO: replace with this alt as it's more direct and seems to work
-        
+        if doMakeDefaultData {
+            biblePersistentContainer?.makeDefaultData()
+        }
         return true
     }
 
@@ -65,45 +64,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Core Data stack
     
-    func copyDefaultData() {
-        /// The first time this app is used: instead of creating a blank data store, copy the default data.
-        let defaultDataName = "DefaultData"
-        let sqliteExtension = "sqlite"
-        let shmExtension = "\(sqliteExtension)-shm"
-        let walExtension = "\(sqliteExtension)-wal"
-        let coreDataDirectoryURL = NSPersistentContainer.defaultDirectoryURL()
-        do {
-            let regularSqliteURL = coreDataDirectoryURL.appendingPathComponent("\(appName).\(sqliteExtension)")
-            guard !FileManager.default.fileExists(atPath: regularSqliteURL.path) else {
-                return
-            }
-            // The regular .sqlite isn't there, so we'll copy the default data.
-            os_log("First time running app? Loading default data.", log: .default, type: .default)
-            guard let defaultDataSqliteURL = Bundle.main.url(forResource: defaultDataName, withExtension: sqliteExtension) else {
-                os_log("Error: Can't find file: %@.", log: .default, type: .error, "\(defaultDataName).\(sqliteExtension)")
-                return
-            }
-            guard let defaultDataSqliteSHMURL = Bundle.main.url(forResource: defaultDataName, withExtension: shmExtension) else {
-                os_log("Error: Can't find file: %@.", log: .default, type: .error, "\(defaultDataName).\(shmExtension)")
-                return
-            }
-            guard let defaultDataSqliteWALURL = Bundle.main.url(forResource: defaultDataName, withExtension: walExtension) else {
-                os_log("Error: Can't find file: %@.", log: .default, type: .error, "\(defaultDataName).\(walExtension)")
-                return
-            }
-            let regularSqliteSHMURL = coreDataDirectoryURL.appendingPathComponent("\(appName).\(shmExtension)")
-            let regularSqliteWALURL = coreDataDirectoryURL.appendingPathComponent("\(appName).\(walExtension)")
-            
-            let preDate = Date()
-            try FileManager.default.copyItem(at: defaultDataSqliteURL, to: regularSqliteURL)
-            try FileManager.default.copyItem(at: defaultDataSqliteSHMURL, to: regularSqliteSHMURL)
-            try FileManager.default.copyItem(at: defaultDataSqliteWALURL, to: regularSqliteWALURL)
-            os_log("Time to copy default data: %.3f.", log: .default, type: .default, preDate.timeIntervalSinceNow)
-        } catch {
-            os_log("Can't copy default data: %@.", log: .default, type: .error, String(describing: error))
-        }
-    }
-    
     lazy var biblePersistentContainer: BiblePersistentContainer? = {
         /*
          The persistent container for the application. This implementation
@@ -113,7 +73,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          This is an optional so, even without a store, the user can access other app
          we can preserve other app functions, especially feedback/help.
          */
-        copyDefaultData()
+        let appName = "Bible-was-Read"
+        if !doMakeDefaultData {
+            BiblePersistentContainer.copyDefaultData(appName: appName)
+        }
+        // If we're making default data from scratch, then we don't want to copy it.
+        
         let container = BiblePersistentContainer(name: appName)
         var wasError = false
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
