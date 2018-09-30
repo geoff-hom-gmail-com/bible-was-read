@@ -129,12 +129,12 @@
 		93B2005E20D9B1160058106C /* Bible was Read */ = {
 			isa = PBXGroup;
 			children = (
-				934B715C2160A1E10082C08F /* DefaultData */,
 				93B2005F20D9B1160058106C /* AppDelegate.swift */,
 				932F053B2155D54200349C19 /* BiblePersistentContainer.swift */,
 				93D7566620DD8F0C00A4F85A /* BookOfTheBibleTableViewController.swift */,
 				931DB1D6210164390042BAA4 /* ChapterAndVerseList.csv */,
 				93D7567720E2B35E00A4F85A /* ChapterTableViewController.swift */,
+				934B715C2160A1E10082C08F /* DefaultData */,
 				93D694FB21546658003ECE73 /* MainMenuTableViewController.swift */,
 				93D7567920E594CD00A4F85A /* VerseCollectionViewCell.swift */,
 				93D7567520E1F6C800A4F85A /* VerseCollectionViewController.swift */,
@@ -484,7 +484,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				INFOPLIST_FILE = "Bible was Read/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -502,7 +502,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 29;
+				CURRENT_PROJECT_VERSION = 30;
 				DEVELOPMENT_TEAM = 5A92XSL5CB;
 				INFOPLIST_FILE = "Bible was Read/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

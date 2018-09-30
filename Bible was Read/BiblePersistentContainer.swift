@@ -42,6 +42,7 @@ class BiblePersistentContainer: NSPersistentContainer {
     func defaultBooks() -> [BookOfTheBible]? {
         /// Returns a Bible with nothing read.
         
+        let preDate = Date()
         let defaultDataFilename = "ChapterAndVerseList"
         let defaultDataSuffix = "csv"
         // The default data is in a human-readable .csv file. The file has a header. Then, each line describes one chapter: book name, chapter, and number of verses. (The .csv was exported from a Google spreadsheet.)
@@ -112,7 +113,7 @@ class BiblePersistentContainer: NSPersistentContainer {
             
             saveContext()
             // Save default data to disk.
-            
+            os_log("Time for defaultBooks(): %.3f.", log: .default, type: .default, preDate.timeIntervalSinceNow)
             return books
         }
         catch {
@@ -143,7 +144,7 @@ class BiblePersistentContainer: NSPersistentContainer {
                 return books
             }
         } catch {
-            os_log("Unable to load saved books: %@. Loading default data.", log: .default, type: .default, String(describing: error))
+            os_log("Can't load saved books: %@. Loading default data.", log: .default, type: .error, String(describing: error))
             return defaultBooks()
         }
         // When fetching the data, it can fail two ways: Fetch throws an error, or fetch returns an empty array. In both cases, we want to return default data.

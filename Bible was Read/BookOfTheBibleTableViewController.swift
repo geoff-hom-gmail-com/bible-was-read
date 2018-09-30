@@ -31,16 +31,7 @@ class BookOfTheBibleTableViewController: UITableViewController, BiblePersistentC
         
         // Get table data.
         biblePersistentContainer?.delegate = self
-        os_log("Pre savedBooks call.", log: .default, type: .debug)
-        let preDate = Date()
-        //TODO: calc timing from log files; curious how this compares to Instruments testing
         booksOfTheBible = biblePersistentContainer?.savedBooks()
-// temp as I want to run and test something
-//        preDate.timeIntervalSinceNow
-        os_log("Post savedBooks call: %.3f.", log: .default, type: .debug, preDate.timeIntervalSinceNow)
-
-//        os_log("Post savedBooks call.", log: .default, type: .debug)
-        // testing timing/performance
     }
 
     override func didReceiveMemoryWarning() {
