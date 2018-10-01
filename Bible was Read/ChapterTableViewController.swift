@@ -30,6 +30,16 @@ class ChapterTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let indexPath = tableView.indexPathForSelectedRow else {
+            return
+        }
+        tableView.reloadRows(at: [indexPath], with: .none)
+        // Story: User marks verses, then taps back to make this view appear.
+        // Update the selected row, if any. A nice side effect is that the row is no longer selected (both appearance and in code).
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

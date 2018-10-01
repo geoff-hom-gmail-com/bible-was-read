@@ -143,7 +143,7 @@
         <!--John-->
         <scene sceneID="pio-XY-PmT">
             <objects>
-                <tableViewController id="HHm-AB-R2c" customClass="ChapterTableViewController" customModule="Bible_was_Read" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController clearsSelectionOnViewWillAppear="NO" id="HHm-AB-R2c" customClass="ChapterTableViewController" customModule="Bible_was_Read" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="XhF-pz-vd0">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
