@@ -86,8 +86,9 @@ class BiblePersistentContainer: NSPersistentContainer {
          • Delete the app in the simulator, so there's no Core Data store.
          • Call this function, like in application(_:didFinishLaunchingWithOptions:).
          • Check the console to find the directory with the Core Data files.
-         • Copy the 3 .sqlite files into the Xcode project, under the group "DefaultData".
+         • Rename the 3 .sqlite files to the prefix "DefaultData". Put those files in the Xcode project, under the group "DefaultData".
          • Comment out the function call.
+         • Delete app in simulator again, to test reading from the default-data store.
          
          When the user first runs the app, another function should take the default-data store and copy it to the Core Data directory.
          */
