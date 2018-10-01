@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import os.log
 
 class ChapterTableViewController: UITableViewController {
     // MARK: Properties
@@ -42,19 +43,37 @@ class ChapterTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return bookOfTheBible.chapters?.count ?? 0
         return bookOfTheBible?.chapters?.count ?? 0
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // Table-view cells are reused and should be dequeued.
         let cell = tableView.dequeueReusableCell(withIdentifier: "ChapterTableViewCell", for: indexPath)
+        // Table-view cells are reused and should be dequeued.
         
-        // Populate the cell.
-        cell.textLabel?.text = String(indexPath.row + 1)
-        // could include % done, % left, # verses left, etc. Motivation!
-        
+        guard let chapter = bookOfTheBible?.chapters?[indexPath.row] as? Chapter else {
+            os_log("Could not get chapter for row.", log: .default, type: .debug)
+            cell.textLabel?.text = String(indexPath.row + 1)
+            return cell
+        }
+        guard let verses = chapter.verses?.array as? [Verse] else {
+            os_log("Could not get verses for chapter.", log: .default, type: .debug)
+            cell.textLabel?.text = chapter.name
+            return cell
+        }
+        let totalVerses = verses.count
+        var numVersesRead = 0
+        for verse in verses {
+            if verse.wasRead {
+                numVersesRead += 1
+            }
+        }
+        let percentVersesRead = Double(numVersesRead) * 100.0 / Double(totalVerses)
+        let percentVersesReadRounded = String(format: "%.0f", percentVersesRead)
+        // Percent rounded to nearest integer. E.g., Genesis 1 with 3/31 should be 10% (9.7%).
+        cell.textLabel?.text = "\(chapter.name ?? "") (\(percentVersesReadRounded)%)"
+        // Text should be like "1 (0%)", "1 (100%)", "1 (4%)".
+
+        // TODO: does cell update when coming back from VerseCVC? It should. Nope, no update when coming back. Only forward. Fix.
         return cell
     }
 
