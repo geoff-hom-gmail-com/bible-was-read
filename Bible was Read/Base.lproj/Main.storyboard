@@ -100,7 +100,7 @@
         <!--Books of the Bible-->
         <scene sceneID="G74-aQ-H3R">
             <objects>
-                <tableViewController title="Books of the Bible" id="URy-r8-y9q" customClass="BookOfTheBibleTableViewController" customModule="Bible_was_Read" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController title="Books of the Bible" clearsSelectionOnViewWillAppear="NO" id="URy-r8-y9q" customClass="BookOfTheBibleTableViewController" customModule="Bible_was_Read" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="IxB-jF-DCq">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

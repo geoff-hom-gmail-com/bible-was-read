@@ -63,6 +63,7 @@ class ChapterTableViewController: UITableViewController {
         guard let chapter = bookOfTheBible?.chapters?[indexPath.row] as? Chapter else {
             os_log("Could not get chapter for row.", log: .default, type: .debug)
             cell.textLabel?.text = String(indexPath.row + 1)
+            // Can still infer chapter name.
             return cell
         }
         guard let verses = chapter.verses?.array as? [Verse] else {
@@ -81,9 +82,7 @@ class ChapterTableViewController: UITableViewController {
         let percentVersesReadRounded = String(format: "%.0f", percentVersesRead)
         // Percent rounded to nearest integer. E.g., Genesis 1 with 3/31 should be 10% (9.7%).
         cell.textLabel?.text = "\(chapter.name ?? "") (\(percentVersesReadRounded)%)"
-        // Text should be like "1 (0%)", "1 (100%)", "1 (4%)".
-
-        // TODO: does cell update when coming back from VerseCVC? It should. Nope, no update when coming back. Only forward. Fix.
+        // Text examples: "1 (0%)", "1 (100%)", "1 (4%)".
         return cell
     }
 
