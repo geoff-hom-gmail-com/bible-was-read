@@ -78,6 +78,7 @@ class ChapterTableViewController: UITableViewController {
                 numVersesRead += 1
             }
         }
+        //TODO: use chapter.numVersesRead since we have it already; faster
         let percentVersesRead = Double(numVersesRead) * 100.0 / Double(totalVerses)
         let percentVersesReadRounded = String(format: "%.0f", percentVersesRead)
         // Percent rounded to nearest integer. E.g., Genesis 1 with 3/31 should be 10% (9.7%).

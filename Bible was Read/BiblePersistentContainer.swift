@@ -20,7 +20,7 @@ class BiblePersistentContainer: NSPersistentContainer {
     // MARK: - Properties
     
     weak var delegate: BiblePersistentContainerDelegate?
-    
+        
     // MARK: - Core Data Saving support
     
     func saveContext() {
@@ -171,5 +171,5 @@ class BiblePersistentContainer: NSPersistentContainer {
             os_log("Can't load saved books: %@.", log: .default, type: .error, String(describing: error))
             return nil
         }
-    }
+    }    
 }

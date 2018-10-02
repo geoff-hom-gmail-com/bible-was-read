@@ -84,29 +84,22 @@ class BookOfTheBibleTableViewController: UITableViewController, BiblePersistentC
             return cell
         }
         var totalVerses = 0
-        var numVersesRead = 0
+//        let totalVerses = 100
+        // testing totalVerses attrib; yeah it's faster; TODO: implement this after committing current stuff
+        let numVersesRead = bookOfTheBible.numVersesRead
         for chapter in chapters {
-            guard let verses = chapter.verses?.array as? [Verse] else {
-                os_log("Could not get verses for chapter.", log: .default, type: .debug)
-                return cell
-            }
-            totalVerses += verses.count
-            for verse in verses {
-                if verse.wasRead {
-                    numVersesRead += 1
-                }
-            }
+            totalVerses += chapter.verses?.count ?? 0
         }
+        // TODO: add totalVerses attribute; when making default data, can do that calc.
+        // TODO: make new default-data store
         let percentVersesRead = Double(numVersesRead) * 100.0 / Double(totalVerses)
         let percentVersesReadRounded = String(format: "%.0f", percentVersesRead)
         // Percent rounded to nearest integer. E.g., Obadiah with 1/21 should be 5% (4.8%).
         cell.textLabel?.text = "\(bookOfTheBible.name ?? "") (\(percentVersesReadRounded)%)"
         // Text examples: "Genesis (0%)", "Genesis (100%)", "Genesis (4%)".
-        //todo: call is slow (1.5 sec) This as slow as it'll get. Think about how to speed it up. (E.g., each book could store how much of it is read and save that, rather than compute.)
-        // ok, we're slow as, for each book, we go through each chapter and look at each verse. That's c * v, where c = chapters and v = verses. Chapters can be 1–30 ish, and verses can be 5-30 ish.
-        // one option is to have each chapter record how many verses are read. also, a book can record how many verses are read (and total verses).
-        // what's most readable?
-//        os_log("cellForRowAt indexPath.", log: .default, type: .debug)
+        /*
+         Calculating % read was slow, looping over all verses for all chapters. (1.5 seconds in simulator.) So, we pre-calculate and store numVersesRead for each chapter and book of the Bible (TODO: and totalVerses).
+         */
         return cell
     }
 
